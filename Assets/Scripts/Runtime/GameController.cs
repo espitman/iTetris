@@ -10,7 +10,7 @@ using iTetris.Core;
 
 namespace iTetris
 {
-    public sealed class GameController : MonoBehaviour
+    public sealed partial class GameController : MonoBehaviour
     {
         TetrisGame game;
         CrystalView crystals;
@@ -46,6 +46,9 @@ namespace iTetris
         void Start()
         {
             Application.targetFrameRate=120;
+            #if UNITY_STANDALONE_OSX && !UNITY_EDITOR
+            Screen.fullScreenMode=FullScreenMode.FullScreenWindow;
+            #endif
             best=PlayerPrefs.GetInt("BestScore",0);
             font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             BuildScene();BuildInterface();
@@ -53,14 +56,19 @@ namespace iTetris
             game=new TetrisGame();game.Changed+=()=>dirty=true;game.Locked+=OnLock;game.Ended+=()=>endedPending=true;
             DrawAttract();ShowMenu("iTetris","CRYSTAL / AURORA", "PLAY",false);
             #if !UNITY_WEBGL || UNITY_EDITOR
+            BuildHub();OpenHub();
+            #endif
+            #if !UNITY_WEBGL || UNITY_EDITOR
             var launchArgs=Environment.GetCommandLineArgs();
             if(Array.IndexOf(launchArgs,"--visual-test")>=0||Array.IndexOf(launchArgs,"--smoke-test")>=0)diagnosticBest=best;
-            if(Array.IndexOf(Environment.GetCommandLineArgs(),"--visual-test")>=0){Application.runInBackground=true;StartCoroutine(VisualCapture());}
+            if(Array.IndexOf(launchArgs,"--hub-capture")>=0){Application.runInBackground=true;StartCoroutine(HubCapture());}
+            if(Array.IndexOf(launchArgs,"--visual-test")>=0){OpenTetris();Application.runInBackground=true;StartCoroutine(VisualCapture());}
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"--smoke-test")>=0){Application.runInBackground=true;StartCoroutine(SmokeTest());}
 #endif
         }
         void BuildScene()
         {
+            tetrisWorld=new GameObject("Tetris world");
             cameraMain=new GameObject("Main Camera").AddComponent<Camera>();cameraMain.tag="MainCamera";
             cameraMain.orthographic=true;cameraMain.orthographicSize=12.5f;cameraMain.transform.position=new Vector3(0,0,-30);
             cameraMain.backgroundColor=new Color(.01f,.025f,.05f);cameraMain.clearFlags=CameraClearFlags.SolidColor;
@@ -73,26 +81,26 @@ namespace iTetris
             RenderSettings.ambientMode=AmbientMode.Flat;RenderSettings.ambientLight=new Color(.35f,.43f,.56f);
             var light=new GameObject("Crystal key light").AddComponent<Light>();light.type=LightType.Directional;light.intensity=1.7f;light.color=new Color(.73f,.89f,1);light.transform.rotation=Quaternion.Euler(35,25,0);
             var fill=new GameObject("Violet fill").AddComponent<Light>();fill.type=LightType.Directional;fill.intensity=.6f;fill.color=new Color(.62f,.55f,1);fill.transform.rotation=Quaternion.Euler(-30,-55,0);
-            var back=Quad("Aurora lake backdrop",new Vector3(0,0,8),new Vector2(40,25),Color.white);
+            var back=Quad("Aurora lake backdrop",new Vector3(0,0,8),new Vector2(40,25),Color.white,false);
             backdropMaterial=new Material(Shader.Find("iTetris/AuroraBackground"));backdropMaterial.SetTexture("_MainTex",Resources.Load<Texture2D>("Art/AuroraLake"));back.GetComponent<Renderer>().sharedMaterial=backdropMaterial;
-            var board=new GameObject("Board frame");board.transform.position=new Vector3(0,-.3f,0);
+            var board=new GameObject("Board frame");board.transform.SetParent(tetrisWorld.transform);board.transform.position=new Vector3(0,-.3f,0);
             Quad("Board glass",new Vector3(0,-.3f,1),new Vector2(10.1f,20.1f),new Color(.008f,.025f,.04f,.86f));
             CrystalView.Outline(board.transform,10.35f,20.35f,.032f,new Color(.47f,1.5f,1.65f),.3f);
             CrystalView.Outline(board.transform,10.65f,20.65f,.014f,new Color(.12f,.44f,.54f),.5f);
             for(int x=0;x<=10;x++)CrystalView.Line(board.transform,new Vector3(x-5,-10,.6f),new Vector3(x-5,10,.6f),.009f,new Color(.14f,.23f,.30f,.65f));
             for(int y=0;y<=20;y++)CrystalView.Line(board.transform,new Vector3(-5,y-10,.6f),new Vector3(5,y-10,.6f),.009f,new Color(.14f,.23f,.30f,.65f));
-            crystals=new CrystalView(new GameObject("Crystal pieces").transform);
+            var pieces=new GameObject("Crystal pieces");pieces.transform.SetParent(tetrisWorld.transform);crystals=new CrystalView(pieces.transform);
             for(int x=0;x<10;x++)for(int y=0;y<20;y++) {settled[x,y]=crystals.Block(PieceKind.I,BoardPosition(x,y));settled[x,y].SetActive(false);}
             for(int i=0;i<4;i++) {active[i]=crystals.Block(PieceKind.I,Vector3.zero);active[i].SetActive(false);ghosts[i]=crystals.Ghost(PieceKind.I,Vector3.zero);ghosts[i].SetActive(false);}
             for(int i=0;i<16;i++) {previews[i]=crystals.Block(PieceKind.T,Vector3.zero,.7f);previews[i].SetActive(false);}
             var rng=new System.Random(12);
             for(int i=0;i<45;i++)
             {
-                var s=Quad("Atmospheric mote",new Vector3((float)rng.NextDouble()*38-19,(float)rng.NextDouble()*24-12,4),Vector2.one*.024f,new Color(.18f,.48f,.58f,.5f));stars.Add(s.transform);
+                var s=Quad("Atmospheric mote",new Vector3((float)rng.NextDouble()*38-19,(float)rng.NextDouble()*24-12,4),Vector2.one*.024f,new Color(.18f,.48f,.58f,.5f),false);stars.Add(s.transform);
             }
         }
         static Mesh quadMesh;
-        static GameObject Quad(string name,Vector3 pos,Vector2 size,Color c)
+        GameObject Quad(string name,Vector3 pos,Vector2 size,Color c,bool gameplay=true)
         {
             if(quadMesh==null)
             {
@@ -102,15 +110,16 @@ namespace iTetris
                 quadMesh.triangles=new[]{0,2,1,2,3,1};quadMesh.RecalculateNormals();
             }
             var g=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));g.GetComponent<MeshFilter>().sharedMesh=quadMesh;
-            g.transform.position=pos;g.transform.localScale=new Vector3(size.x,size.y,1);g.GetComponent<Renderer>().sharedMaterial=CrystalView.Unlit(c);return g;
+            if(gameplay)g.transform.SetParent(tetrisWorld.transform);g.transform.position=pos;g.transform.localScale=new Vector3(size.x,size.y,1);g.GetComponent<Renderer>().sharedMaterial=CrystalView.Unlit(c);return g;
         }
         void WorldOutline(Vector3 pos,float w,float h)
-        {var p=new GameObject("Panel light rim");p.transform.position=pos;CrystalView.Outline(p.transform,w,h,.017f,new Color(.21f,.38f,.46f));}
+        {var p=new GameObject("Panel light rim");p.transform.SetParent(tetrisWorld.transform);p.transform.position=pos;CrystalView.Outline(p.transform,w,h,.017f,new Color(.21f,.38f,.46f));}
         void BuildInterface()
         {
             canvas=new GameObject("Interface",typeof(RectTransform),typeof(Canvas),typeof(GraphicRaycaster)).GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;
             new GameObject("EventSystem",typeof(EventSystem),typeof(StandaloneInputModule));
-            var root=canvas.transform;
+            tetrisUiRoot=UIObject("Tetris interface",canvas.transform,Vector2.zero,new Vector2(1600,1000)).gameObject;
+            var root=tetrisUiRoot.transform;
             Label(root,"i T e t r i s",new Vector2(0,461),new Vector2(400,48),34,Pale);
             Label(root,"F I N D   Y O U R   F L O W",new Vector2(0,422),new Vector2(400,22),10,Muted);
             var left=Panel(root,new Vector2(-412,244),new Vector2(258,150));
@@ -150,7 +159,7 @@ namespace iTetris
             #if UNITY_WEBGL && !UNITY_EDITOR
             ButtonAt(overlay,"HELP",new Vector2(0,-182),new Vector2(100,30),()=>ToggleHelp());
 #else
-            ButtonAt(overlay,"QUIT",new Vector2(0,-182),new Vector2(100,30),()=>Application.Quit());
+            ButtonAt(overlay,"GAME HUB",new Vector2(0,-182),new Vector2(160,30),()=>OpenHub());
 #endif
             Label(overlay,"SPACE TO PLAY  ·  ESC TO PAUSE",new Vector2(0,-224),new Vector2(370,26),10,Muted);
             helpPanel=Panel(root,Vector2.zero,new Vector2(750,660),new Color(.015f,.035f,.06f,.99f)).gameObject;
@@ -221,10 +230,11 @@ namespace iTetris
 #endif
             float scale=Mathf.Min(Screen.width/1600f,Screen.height/1000f);canvas.scaleFactor=scale;
             cameraMain.orthographicSize=Screen.height/(scale*80);
-            if(Input.GetKeyDown(KeyCode.M)){audioWorld.Toggle();UpdateSound();}
+            if(Input.GetKeyDown(KeyCode.M)){audioWorld.Toggle();UpdateSound();UpdateHubSound();}
             #if !UNITY_WEBGL || UNITY_EDITOR
             if(Input.GetKeyDown(KeyCode.F11))Screen.fullScreen=!Screen.fullScreen;
 #endif
+            if(hubVisible){HandleHubInput();UpdateAtmosphere();return;}
             if(helpPanel.activeSelf){if(Input.GetKeyDown(KeyCode.Escape))ToggleHelp();}
             else if(!started||game.GameOver)
             {if(Input.GetKeyDown(KeyCode.Space)||Input.GetKeyDown(KeyCode.Return))StartGame();}
@@ -356,6 +366,19 @@ namespace iTetris
         IEnumerator SmokeTest()
         {
             yield return new WaitForSecondsRealtime(.5f);
+            #if UNITY_STANDALONE_OSX
+            Check(Screen.fullScreenMode==FullScreenMode.FullScreenWindow,"macOS starts fullscreen");
+            #endif
+            Check(hubVisible&&hubRoot.activeSelf&&!tetrisWorld.activeSelf&&!tetrisUiRoot.activeSelf,"hub is the native startup screen");
+            SelectHubGame(1);Check(!hubPlayButtons[1].interactable&&hubPlayButtons[1].GetComponentInChildren<Text>().text=="COMING SOON","Brick Garden has no playable action");
+            PrimaryHubAction();Check(hubVisible&&!started,"unreleased game cannot start Tetris");
+            SelectHubGame(5);Check(selectedHubGame==5&&hubScroll.horizontalNormalizedPosition>.99f,"library scrolls to last game");
+            for(int i=1;i<HubGameCount;i++){SelectHubGame(i);PrimaryHubAction();Check(hubVisible&&!hubPlayButtons[i].interactable,"upcoming card "+i+" stays unavailable");}
+            SelectHubGame(0);PrimaryHubAction();Check(!hubVisible&&tetrisWorld.activeSelf&&tetrisUiRoot.activeSelf,"Tetris opens from hub");
+            StartGame();zen=true;
+            int hubScore=game.Score,hubY=game.Y;OpenHub();yield return new WaitForSecondsRealtime(.2f);
+            Check(hubVisible&&paused&&game.Score==hubScore&&game.Y==hubY,"return to hub freezes current game");
+            PrimaryHubAction();Check(!hubVisible&&!paused&&!overlay.gameObject.activeSelf,"card resume returns directly to Tetris");
             StartGame();zen=true;
             Check(started&&!overlay.gameObject.activeSelf,"start menu closes");
             Check(game.Hold(),"hold input action");DrawGame();Check(previews[12].activeSelf,"held piece is rendered");

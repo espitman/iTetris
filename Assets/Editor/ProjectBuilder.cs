@@ -28,7 +28,7 @@ namespace iTetris.Editor
             PlayerSettings.companyName="iTetris";PlayerSettings.productName="iTetris";PlayerSettings.bundleVersion="1.0.0";
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Standalone,"com.itetris.crystal");
             PlayerSettings.defaultScreenWidth=1600;PlayerSettings.defaultScreenHeight=1000;
-            PlayerSettings.fullScreenMode=FullScreenMode.Windowed;PlayerSettings.resizableWindow=true;PlayerSettings.runInBackground=false;
+            PlayerSettings.fullScreenMode=FullScreenMode.FullScreenWindow;PlayerSettings.resizableWindow=true;PlayerSettings.runInBackground=false;
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone,ScriptingImplementation.Mono2x);
             PlayerSettings.SetArchitecture(BuildTargetGroup.Standalone,2); // Universal Intel + Apple Silicon.
             PlayerSettings.usePlayerLog=true;
