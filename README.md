@@ -2,7 +2,7 @@
 
 بازی تتریس برای macOS و مرورگر با Unity 6، رندر URP، بلوک‌های تراش‌خوردهٔ Blender و پس‌زمینهٔ شفق قطبی.
 
-[بازی آنلاین — itetris.iboum.ir](https://itetris.iboum.ir)
+دامنهٔ نسخهٔ وب: [itetris.iboum.ir](https://itetris.iboum.ir). دامنه و SSL فعال‌اند؛ اولین انتشار هنوز در انتظار تکمیل آپلود فایل اصلی WebAssembly به Cloudflare Pages است.
 
 ![نمای بازی](Documentation/Gameplay.png)
 
