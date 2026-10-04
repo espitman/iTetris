@@ -1,0 +1,14 @@
+PASS Every shape has four unique cells across all rotations
+PASS Seven bag contains every piece once
+PASS Hold is limited to once per piece and resets after lock
+PASS Wall collision and four rotations preserve cells
+PASS I piece floor kick succeeds using SRS offsets
+PASS Ghost landing equals hard drop and awards distance score
+PASS Lock delay waits half a second
+PASS Double clear compacts board and awards perfect clear
+PASS Four line clear, back to back and combo bonuses
+PASS Level increases at ten lines
+PASS T spin requires rotation and three occupied corners
+PASS Spawn collision ends game and restart clears state
+PASS Seeded stress play never produces out of bounds or partial pieces
+ALL 13 RULES TESTS PASSED

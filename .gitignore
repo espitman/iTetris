@@ -1,0 +1,14 @@
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+Builds/
+.DS_Store
+*.csproj
+*.sln
+Tools/bin/
+Tools/obj/
+*.blend1
+!Tools/RulesTests.csproj
+Documentation/*.log
