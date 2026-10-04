@@ -95,7 +95,7 @@ namespace iTetris.Editor
         public static void RunRulesTests()
         {
             var path=Path.GetFullPath("Documentation/RulesTests.txt");
-            string results=RulesVerification.Run();File.WriteAllText(path,results);Debug.Log(results);
+            string results=RulesVerification.Run()+"\n"+BrickGardenVerification.Run();File.WriteAllText(path,results);Debug.Log(results);
         }
     }
 }

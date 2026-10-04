@@ -12,3 +12,19 @@ PASS T spin requires rotation and three occupied corners
 PASS Spawn collision ends game and restart clears state
 PASS Seeded stress play never produces out of bounds or partial pieces
 ALL 13 RULES TESTS PASSED
+
+PASS: new garden has a legal merge
+PASS: merge grows destination and frees source
+PASS: merge preserves planting preview
+PASS: empty tile receives preview rank
+PASS: invalid moves leave state unchanged
+PASS: row edges do not wrap
+PASS: diagonals cannot merge
+PASS: full checkerboard ends the game
+PASS: full board with a pair remains playable
+PASS: rank eight is the bloom goal
+PASS: maximum rank does not overflow
+PASS: invalid saves rejected
+PASS: bad ranks reject atomically
+PASS: restart resets progress
+All 14 garden rule checks passed.

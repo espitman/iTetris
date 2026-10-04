@@ -60,6 +60,8 @@ namespace iTetris
             #endif
             #if !UNITY_WEBGL || UNITY_EDITOR
             var launchArgs=Environment.GetCommandLineArgs();
+            gardenNoSave=Array.IndexOf(launchArgs,"--smoke-test")>=0||Array.IndexOf(launchArgs,"--garden-capture")>=0;
+            if(Array.IndexOf(launchArgs,"--garden-capture")>=0){Application.runInBackground=true;StartCoroutine(GardenCapture());}
             if(Array.IndexOf(launchArgs,"--visual-test")>=0||Array.IndexOf(launchArgs,"--smoke-test")>=0)diagnosticBest=best;
             if(Array.IndexOf(launchArgs,"--hub-capture")>=0){Application.runInBackground=true;StartCoroutine(HubCapture());}
             if(Array.IndexOf(launchArgs,"--visual-test")>=0){OpenTetris();Application.runInBackground=true;StartCoroutine(VisualCapture());}
@@ -235,6 +237,7 @@ namespace iTetris
             if(Input.GetKeyDown(KeyCode.F11))Screen.fullScreen=!Screen.fullScreen;
 #endif
             if(hubVisible){HandleHubInput();UpdateAtmosphere();return;}
+            if(gardenActive){UpdateGarden();return;}
             if(helpPanel.activeSelf){if(Input.GetKeyDown(KeyCode.Escape))ToggleHelp();}
             else if(!started||game.GameOver)
             {if(Input.GetKeyDown(KeyCode.Space)||Input.GetKeyDown(KeyCode.Return))StartGame();}
@@ -359,8 +362,8 @@ namespace iTetris
             audioWorld.Play("end");PlayerPrefs.Save();
             ShowMenu("GAME OVER","SCORE  "+game.Score.ToString("N0")+"\nLINES  "+game.Lines+"   ·   LEVEL  "+game.Level,"PLAY AGAIN",false);
         }
-        void OnApplicationFocus(bool focus){if(!focus&&started&&!paused&&!game.GameOver)TogglePause();}
-        void OnApplicationQuit(){if(diagnosticBest.HasValue)PlayerPrefs.SetInt("BestScore",diagnosticBest.Value);PlayerPrefs.Save();}
+        void OnApplicationFocus(bool focus){if(gardenActive){if(!focus&&!gardenPaused)PauseGarden();return;}if(!focus&&started&&!paused&&!game.GameOver)TogglePause();}
+        void OnApplicationQuit(){SaveGarden();if(diagnosticBest.HasValue)PlayerPrefs.SetInt("BestScore",diagnosticBest.Value);PlayerPrefs.Save();}
         #if !UNITY_WEBGL || UNITY_EDITOR
         static void Check(bool condition,string name){if(!condition)throw new Exception("SMOKE FAILED: "+name);Debug.Log("SMOKE PASS: "+name);}
         IEnumerator SmokeTest()
@@ -370,10 +373,22 @@ namespace iTetris
             Check(Screen.fullScreenMode==FullScreenMode.FullScreenWindow,"macOS starts fullscreen");
             #endif
             Check(hubVisible&&hubRoot.activeSelf&&!tetrisWorld.activeSelf&&!tetrisUiRoot.activeSelf,"hub is the native startup screen");
-            SelectHubGame(1);Check(!hubPlayButtons[1].interactable&&hubPlayButtons[1].GetComponentInChildren<Text>().text=="COMING SOON","Brick Garden has no playable action");
-            PrimaryHubAction();Check(hubVisible&&!started,"unreleased game cannot start Tetris");
+            SelectHubGame(1);Check(hubPlayButtons[1].interactable,"Brick Garden is playable in hub");
+            PrimaryHubAction();Check(gardenActive&&!hubVisible&&!tetrisWorld.activeSelf,"garden opens independently of Tetris");
+            var testGarden=new int[16];testGarden[0]=testGarden[1]=1;garden.Restore(testGarden,0,0,2);gardenPaused=false;DrawGarden();
+            GardenClick(0);GardenClick(1);Check(garden.Board[1]==2&&garden.Score==40&&garden.Board[0]==0,"garden tile selection merges neighbours");
+            GardenClick(0);Check(garden.Board[0]==2&&garden.Moves==2,"garden places preview on empty tile");
+            yield return null;Physics.SyncTransforms();RaycastHit gardenHit;
+            Check(Physics.Raycast(new Ray(GardenPosition(0)+Vector3.back*30,Vector3.forward),out gardenHit,100,1<<8)&&gardenHit.collider.GetComponent<GardenTile>().Index==0,"garden tile collider accepts mouse ray");
+            string gardenSnapshot=JsonUtility.ToJson(new GardenSave{cells=garden.Board,score=garden.Score,moves=garden.Moves,next=garden.Next});
+            var restoredSnapshot=JsonUtility.FromJson<GardenSave>(gardenSnapshot);var restoredGarden=new BrickGardenRules(123);
+            Check(restoredGarden.Restore(restoredSnapshot.cells,restoredSnapshot.score,restoredSnapshot.moves,restoredSnapshot.next)&&restoredGarden.Score==garden.Score&&restoredGarden.Next==garden.Next&&restoredGarden.Board[1]==garden.Board[1],"garden save payload round trips");
+            PauseGarden();Check(gardenPaused&&gardenMenu.activeSelf,"garden pause menu");ResumeGarden();Check(!gardenPaused&&!gardenMenu.activeSelf,"garden resumes");
+            int savedGardenScore=garden.Score;OpenHub();Check(!gardenActive&&!gardenWorld.activeSelf&&hubVisible,"garden returns to hub");PrimaryHubAction();Check(gardenActive&&garden.Score==savedGardenScore,"garden state survives hub navigation");
+            for(int i=0;i<16;i++)testGarden[i]=(i%4+i/4)%2+1;garden.Restore(testGarden,100,20,1);DrawGarden();Check(gardenPaused&&gardenMenu.activeSelf&&gardenMenuTitle.text=="GARDEN COMPLETE","garden ends when full without matching neighbours");
+            RestartGarden();Check(!gardenPaused&&garden.Score==0&&garden.HasMoves,"new garden restarts after completion");OpenHub();
             SelectHubGame(5);Check(selectedHubGame==5&&hubScroll.horizontalNormalizedPosition>.99f,"library scrolls to last game");
-            for(int i=1;i<HubGameCount;i++){SelectHubGame(i);PrimaryHubAction();Check(hubVisible&&!hubPlayButtons[i].interactable,"upcoming card "+i+" stays unavailable");}
+            for(int i=2;i<HubGameCount;i++){SelectHubGame(i);PrimaryHubAction();Check(hubVisible&&!hubPlayButtons[i].interactable,"upcoming card "+i+" stays unavailable");}
             SelectHubGame(0);PrimaryHubAction();Check(!hubVisible&&tetrisWorld.activeSelf&&tetrisUiRoot.activeSelf,"Tetris opens from hub");
             StartGame();zen=true;
             int hubScore=game.Score,hubY=game.Y;OpenHub();yield return new WaitForSecondsRealtime(.2f);

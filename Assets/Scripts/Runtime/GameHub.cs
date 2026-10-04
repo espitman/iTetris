@@ -39,7 +39,7 @@ namespace iTetris
             hubScroll.horizontal=true;hubScroll.vertical=false;hubScroll.movementType=ScrollRect.MovementType.Clamped;
             hubScroll.scrollSensitivity=45;hubScroll.decelerationRate=.08f;
             HubCard(content,0,"Tetris","CLASSIC PUZZLE","Arrange. Clear. Find your flow.","Art/HubTetris");
-            HubCard(content,1,"Brick Garden","MERGE PUZZLE","Small pieces. A brighter garden.","Art/HubBrickGarden");
+            HubCard(content,1,"Brick Garden","MERGE PUZZLE","Small pieces. A brighter garden.","Art/HubBrickGardenPlayable");
             HubCard(content,2,"Crystal Breaker","ARCADE","One ball. A thousand little sparks.","Art/HubCrystalBreaker");
             HubCard(content,3,"Light Path","LOGIC PUZZLE","Reflect the light. Illuminate the way.","Art/HubLightPath");
             HubCard(content,4,"Orbit Rings","COLOR PUZZLE","Turn the rings. Find your harmony.","Art/HubOrbitRings");
@@ -88,15 +88,16 @@ namespace iTetris
             Label(card,genre,new Vector2(0,-70),new Vector2(460,24),11,Muted);
             Label(card,title,new Vector2(0,-111),new Vector2(460,60),36,Pale);
             Label(card,description,new Vector2(0,-163),new Vector2(480,38),15,Muted);
-            hubPlayButtons[index]=ButtonAt(card,index==0?"PLAY":"COMING SOON",new Vector2(0,-230),new Vector2(360,52),()=>{SelectHubGame(index);PrimaryHubAction();},index==0);
-            hubPlayButtons[index].interactable=index==0;
-            if(index>0)Label(pictureFrame,"CONCEPT PREVIEW",new Vector2(0,-123),new Vector2(472,25),10,Color.white);
+            hubPlayButtons[index]=ButtonAt(card,index<2?"PLAY":"COMING SOON",new Vector2(0,-230),new Vector2(360,52),()=>{SelectHubGame(index);PrimaryHubAction();},index<2);
+            hubPlayButtons[index].interactable=index<2;
+            if(index>1)Label(pictureFrame,"CONCEPT PREVIEW",new Vector2(0,-123),new Vector2(472,25),10,Color.white);
         }
         void SelectHubGame(int index)
         {
             selectedHubGame=Mathf.Clamp(index,0,HubGameCount-1);
             for(int i=0;i<HubGameCount;i++)hubCardRims[i].effectColor=i==selectedHubGame?new Color(.3f,.83f,.9f,.95f):new Color(.2f,.38f,.46f,.55f);
             hubPlayButtons[0].GetComponentInChildren<Text>().text=started&&!game.GameOver?"RESUME":"PLAY";
+            hubPlayButtons[1].GetComponentInChildren<Text>().text=garden!=null&&garden.HasMoves?"RESUME":"PLAY";
             hubPrevious.interactable=selectedHubGame>0;hubNext.interactable=selectedHubGame<HubGameCount-1;
             Canvas.ForceUpdateCanvases();hubScroll.StopMovement();
             float range=hubScroll.content.rect.width-HubViewportWidth;
@@ -109,10 +110,11 @@ namespace iTetris
             if(hubRoot==null)return;
             paused=started&&!game.GameOver;
             helpPanel.SetActive(false);ResetInput();
+            if(gardenWorld!=null){SaveGarden();gardenActive=false;gardenWorld.SetActive(false);gardenUi.SetActive(false);}
             hubVisible=true;tetrisWorld.SetActive(false);tetrisUiRoot.SetActive(false);hubRoot.SetActive(true);
             SelectHubGame(selectedHubGame);UpdateHubSound();
         }
-        void PrimaryHubAction(){if(selectedHubGame==0){OpenTetris();PrimaryAction();}}
+        void PrimaryHubAction(){if(selectedHubGame==0){OpenTetris();PrimaryAction();}else if(selectedHubGame==1)OpenGarden();}
         void OpenTetris()
         {
             hubVisible=false;if(hubRoot!=null)hubRoot.SetActive(false);
