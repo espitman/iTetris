@@ -52,10 +52,12 @@ namespace iTetris
             audioWorld=gameObject.AddComponent<Soundscape>();audioWorld.Initialize();UpdateSound();
             game=new TetrisGame();game.Changed+=()=>dirty=true;game.Locked+=OnLock;game.Ended+=()=>endedPending=true;
             DrawAttract();ShowMenu("iTetris","CRYSTAL / AURORA", "PLAY",false);
+            #if !UNITY_WEBGL || UNITY_EDITOR
             var launchArgs=Environment.GetCommandLineArgs();
             if(Array.IndexOf(launchArgs,"--visual-test")>=0||Array.IndexOf(launchArgs,"--smoke-test")>=0)diagnosticBest=best;
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"--visual-test")>=0){Application.runInBackground=true;StartCoroutine(VisualCapture());}
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"--smoke-test")>=0){Application.runInBackground=true;StartCoroutine(SmokeTest());}
+#endif
         }
         void BuildScene()
         {
@@ -71,7 +73,7 @@ namespace iTetris
             RenderSettings.ambientMode=AmbientMode.Flat;RenderSettings.ambientLight=new Color(.35f,.43f,.56f);
             var light=new GameObject("Crystal key light").AddComponent<Light>();light.type=LightType.Directional;light.intensity=1.7f;light.color=new Color(.73f,.89f,1);light.transform.rotation=Quaternion.Euler(35,25,0);
             var fill=new GameObject("Violet fill").AddComponent<Light>();fill.type=LightType.Directional;fill.intensity=.6f;fill.color=new Color(.62f,.55f,1);fill.transform.rotation=Quaternion.Euler(-30,-55,0);
-            var back=GameObject.CreatePrimitive(PrimitiveType.Quad);back.name="Aurora lake backdrop";Destroy(back.GetComponent<Collider>());back.transform.position=new Vector3(0,0,8);back.transform.localScale=new Vector3(40,25,1);
+            var back=Quad("Aurora lake backdrop",new Vector3(0,0,8),new Vector2(40,25),Color.white);
             backdropMaterial=new Material(Shader.Find("iTetris/AuroraBackground"));backdropMaterial.SetTexture("_MainTex",Resources.Load<Texture2D>("Art/AuroraLake"));back.GetComponent<Renderer>().sharedMaterial=backdropMaterial;
             var board=new GameObject("Board frame");board.transform.position=new Vector3(0,-.3f,0);
             Quad("Board glass",new Vector3(0,-.3f,1),new Vector2(10.1f,20.1f),new Color(.008f,.025f,.04f,.86f));
@@ -89,9 +91,18 @@ namespace iTetris
                 var s=Quad("Atmospheric mote",new Vector3((float)rng.NextDouble()*38-19,(float)rng.NextDouble()*24-12,4),Vector2.one*.024f,new Color(.18f,.48f,.58f,.5f));stars.Add(s.transform);
             }
         }
+        static Mesh quadMesh;
         static GameObject Quad(string name,Vector3 pos,Vector2 size,Color c)
         {
-            var g=GameObject.CreatePrimitive(PrimitiveType.Quad);g.name=name;Destroy(g.GetComponent<Collider>());g.transform.position=pos;g.transform.localScale=new Vector3(size.x,size.y,1);g.GetComponent<Renderer>().sharedMaterial=CrystalView.Unlit(c);return g;
+            if(quadMesh==null)
+            {
+                quadMesh=new Mesh{name="Shared visual quad"};
+                quadMesh.vertices=new[]{new Vector3(-.5f,-.5f,0),new Vector3(.5f,-.5f,0),new Vector3(-.5f,.5f,0),new Vector3(.5f,.5f,0)};
+                quadMesh.uv=new[]{new Vector2(0,0),new Vector2(1,0),new Vector2(0,1),new Vector2(1,1)};
+                quadMesh.triangles=new[]{0,2,1,2,3,1};quadMesh.RecalculateNormals();
+            }
+            var g=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));g.GetComponent<MeshFilter>().sharedMesh=quadMesh;
+            g.transform.position=pos;g.transform.localScale=new Vector3(size.x,size.y,1);g.GetComponent<Renderer>().sharedMaterial=CrystalView.Unlit(c);return g;
         }
         void WorldOutline(Vector3 pos,float w,float h)
         {var p=new GameObject("Panel light rim");p.transform.position=pos;CrystalView.Outline(p.transform,w,h,.017f,new Color(.21f,.38f,.46f));}
@@ -136,7 +147,11 @@ namespace iTetris
             primaryButton=ButtonAt(overlay,"PLAY",new Vector2(0,15),new Vector2(275,58),()=>PrimaryAction(),true);
             secondaryButton=ButtonAt(overlay,"NEW GAME",new Vector2(0,-61),new Vector2(275,46),()=>StartGame());
             ButtonAt(overlay,"MARATHON  /  ZEN",new Vector2(0,-135),new Vector2(275,40),()=>{zen=!zen;modeText.text=zen?"ZEN · NO GRAVITY":"MARATHON";RefreshMenuMode();});
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            ButtonAt(overlay,"HELP",new Vector2(0,-182),new Vector2(100,30),()=>ToggleHelp());
+#else
             ButtonAt(overlay,"QUIT",new Vector2(0,-182),new Vector2(100,30),()=>Application.Quit());
+#endif
             Label(overlay,"SPACE TO PLAY  ·  ESC TO PAUSE",new Vector2(0,-224),new Vector2(370,26),10,Muted);
             helpPanel=Panel(root,Vector2.zero,new Vector2(750,660),new Color(.015f,.035f,.06f,.99f)).gameObject;
             Label(helpPanel.transform,"HOW TO PLAY",new Vector2(0,255),new Vector2(650,60),32,Pale);
@@ -201,11 +216,15 @@ namespace iTetris
         }
         void Update()
         {
+            #if !UNITY_WEBGL || UNITY_EDITOR
             if(Input.GetKeyDown(KeyCode.F12))ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(Application.persistentDataPath,"Gameplay.png"));
+#endif
             float scale=Mathf.Min(Screen.width/1600f,Screen.height/1000f);canvas.scaleFactor=scale;
             cameraMain.orthographicSize=Screen.height/(scale*80);
             if(Input.GetKeyDown(KeyCode.M)){audioWorld.Toggle();UpdateSound();}
+            #if !UNITY_WEBGL || UNITY_EDITOR
             if(Input.GetKeyDown(KeyCode.F11))Screen.fullScreen=!Screen.fullScreen;
+#endif
             if(helpPanel.activeSelf){if(Input.GetKeyDown(KeyCode.Escape))ToggleHelp();}
             else if(!started||game.GameOver)
             {if(Input.GetKeyDown(KeyCode.Space)||Input.GetKeyDown(KeyCode.Return))StartGame();}
@@ -332,6 +351,7 @@ namespace iTetris
         }
         void OnApplicationFocus(bool focus){if(!focus&&started&&!paused&&!game.GameOver)TogglePause();}
         void OnApplicationQuit(){if(diagnosticBest.HasValue)PlayerPrefs.SetInt("BestScore",diagnosticBest.Value);PlayerPrefs.Save();}
+        #if !UNITY_WEBGL || UNITY_EDITOR
         static void Check(bool condition,string name){if(!condition)throw new Exception("SMOKE FAILED: "+name);Debug.Log("SMOKE PASS: "+name);}
         IEnumerator SmokeTest()
         {
@@ -369,5 +389,6 @@ namespace iTetris
             Debug.Log("VISUAL_CAPTURE_REQUESTED");yield return new WaitForSecondsRealtime(2);
             if(Array.IndexOf(args,"--quit-after-capture")>=0)Application.Quit();
         }
+#endif
     }
 }

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06111e">
+<meta name="description" content="A crystal Tetris game beneath the aurora. Play Marathon or unwind in Zen mode.">
+<title>iTetris · Crystal / Aurora</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#06111e;color:#c4e5ee;font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif}body{overflow:hidden}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer;color:#c4e5ee;background:#102b39;border:1px solid #2e5e6d;border-radius:9px;padding:8px 15px}button:hover{background:#174556}button:focus-visible,a:focus-visible{outline:2px solid #7cdee8;outline-offset:4px}header{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid #142c3b;background:#06111e}header .brand{font-size:15px;letter-spacing:3px}header .actions{display:flex;gap:12px;align-items:center}header a{color:#7f9fae;text-decoration:none;font-size:12px}main{height:calc(100% - 52px);width:100%;display:grid;place-items:center;position:relative}#game{position:absolute;inset:12px 16px 28px;width:calc(100% - 32px);height:calc(100% - 40px);display:block;outline:none;border-radius:12px}#loading{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 30%,#103844,#06111e 70%);text-align:center;padding:24px}.loading-card{max-width:430px}.mark{display:flex;gap:5px;justify-content:center;margin-bottom:36px}.mark i{display:block;width:38px;height:38px;background:linear-gradient(135deg,#b6ffff,#26adc1 35%,#0e3449 60%,#62dcea);border:1px solid #75f1f4;box-shadow:0 0 25px #39c7dd30}.loading-card h1{font-weight:300;font-size:40px;letter-spacing:8px;margin:0 0 14px}.loading-card p{font-size:13px;line-height:1.8;color:#86aab8}.loading-card .tag{letter-spacing:3px;font-size:10px;margin-bottom:36px}progress{width:100%;height:4px;display:block;margin:26px 0 16px;accent-color:#4bcfda}#status{font-size:12px;color:#a3c8d4}#error{color:#ffc2cd;font-size:13px;line-height:1.7;white-space:pre-wrap}#retry{display:none;margin:15px auto}#mobile{display:none;position:absolute;bottom:8px;left:10px;right:10px;border-radius:8px;background:#06111ee8;padding:10px;color:#a3c8d4;font-size:12px;text-align:center;pointer-events:none}@media(max-width:850px){header{padding:0 12px}header a{display:none}#mobile{display:block}}:fullscreen{background:#06111e}main:fullscreen{height:100vh}
+</style>
+</head>
+<body>
+<header><span class="brand">iTetris</span><div class="actions"><a href="https://github.com/espitman/iTetris" target="_blank" rel="noopener noreferrer">Source on GitHub</a><button id="fullscreen" type="button">Full screen</button></div></header>
+<main id="stage">
+<canvas id="game" width="1600" height="1000" tabindex="0" aria-label="iTetris game. Use arrow keys to move and rotate, space to drop, C to hold, and Escape to pause."></canvas>
+<div id="loading" role="status" aria-live="polite"><div class="loading-card"><div class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h1>iTetris</h1><p class="tag">CRYSTAL / AURORA</p><p>Find your flow beneath the northern lights.</p><progress id="progress" max="1" value="0"></progress><div id="status">Preparing the game…</div><div id="error"></div><button id="retry" type="button">Try again</button><p>Arrow keys · Space to drop · C to hold<br>Best played on a computer with a keyboard.</p></div></div>
+<div id="mobile">This version uses a keyboard. Open it on a computer for the full experience.</div>
+</main>
+<script>
+const canvas=document.getElementById('game');const loading=document.getElementById('loading');const status=document.getElementById('status');const progress=document.getElementById('progress');let instance;
+const config={dataUrl:'Build/{{{ DATA_FILENAME }}}',frameworkUrl:'Build/{{{ FRAMEWORK_FILENAME }}}',codeUrl:'Build/{{{ CODE_FILENAME }}}',streamingAssetsUrl:'StreamingAssets',companyName:{{{ JSON.stringify(COMPANY_NAME) }}},productName:{{{ JSON.stringify(PRODUCT_NAME) }}},productVersion:{{{ JSON.stringify(PRODUCT_VERSION) }}},matchWebGLToCanvasSize:true,devicePixelRatio:Math.min(window.devicePixelRatio||1,1.5),showBanner:(message,type)=>{if(type==='error')showError(message);else console.warn(message);}};
+function showError(message){document.getElementById('error').textContent='The game could not load. Please refresh or try a browser with WebGL 2 support.\n'+message;status.textContent='Loading stopped';document.getElementById('retry').style.display='block';loading.style.display='grid';}
+document.getElementById('retry').onclick=()=>location.reload();
+document.getElementById('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.getElementById('stage').requestFullscreen();canvas.focus({preventScroll:true});}catch(e){status.textContent='Full screen is unavailable in this browser.';}};
+canvas.addEventListener('pointerdown',()=>canvas.focus({preventScroll:true}));canvas.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space'].includes(e.code))e.preventDefault();});
+const loader=document.createElement('script');loader.src='Build/{{{ LOADER_FILENAME }}}';loader.onerror=()=>showError('The game loader is unavailable.');loader.onload=()=>{createUnityInstance(canvas,config,value=>{progress.value=value;status.textContent=value<.9?'Loading the crystal world… '+Math.round(value*100)+'%':'Almost ready…';}).then(game=>{instance=game;window.iTetris=game;loading.style.display='none';canvas.focus({preventScroll:true});}).catch(showError);};document.body.appendChild(loader);
+</script>
+</body>
+</html>

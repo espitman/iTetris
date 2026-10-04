@@ -1,6 +1,8 @@
 # iTetris — Crystal / Aurora
 
-بازی تتریس برای macOS با Unity 6، رندر URP، بلوک‌های تراش‌خوردهٔ Blender و پس‌زمینهٔ شفق قطبی.
+بازی تتریس برای macOS و مرورگر با Unity 6، رندر URP، بلوک‌های تراش‌خوردهٔ Blender و پس‌زمینهٔ شفق قطبی.
+
+[بازی آنلاین — itetris.iboum.ir](https://itetris.iboum.ir)
 
 ![نمای بازی](Documentation/Gameplay.png)
 
@@ -58,3 +60,34 @@ dotnet run --project Tools/RulesTests.csproj
 مدل را می‌توان با `Tools/create_crystal.py` در Blender دوباره ساخت. موسیقی با `python3 Tools/create_audio.py` تولید می‌شود.
 
 پس‌زمینه با ابزار داخلی imagegen ساخته شده است. شرح تولید: دریاچهٔ کوهستانی در شب، شفق ملایم فیروزه‌ای، کوه‌های برفی در دو طرف، آسمان مرکزی تیره برای خوانایی صفحه، بدون نوشته یا عناصر رابط. این فایل یک دارایی تصویری است؛ شفق با شیدر و ذرات کم‌تعداد در اجرا حرکت می‌کند. بلوک‌ها مدل سه‌بعدی با متریال براق و خطوط داخلی‌اند؛ شبیه‌سازی فیزیکی شکست نور شیشه نیستند.
+
+## نسخهٔ وب و Cloudflare Pages
+
+نسخهٔ مرورگر با همان قواعد و گرافیک Unity، برای کامپیوتر دارای صفحه‌کلید ساخته می‌شود. کنترل‌های لمسی موبایل در این نسخه وجود ندارند. دکمهٔ Full screen بالای صفحه حالت تمام‌صفحه را فعال می‌کند. صدا بعد از تعامل با صفحه فعال می‌شود؛ بهترین امتیاز در همان مرورگر ذخیره می‌شود.
+
+ماژول **Web Build Support** را برای Unity 6000.0.83f1 نصب کنید و سپس اجرا کنید:
+
+```sh
+Tools/build-web.command
+```
+
+خروجی در `Builds/Web` نوشته می‌شود. از منوی `iTetris > Build Web` نیز می‌توانید بسازید. صفحهٔ بارگذاری، خطا و تمام‌صفحه در `Assets/WebGLTemplates/Aurora/index.html` قابل‌ویرایش است.
+
+برای پیش‌نمایش محلی، خروجی را با HTTP سرو کنید؛ فایل HTML را مستقیم با `file://` باز نکنید:
+
+```sh
+python3 -m http.server 8080 --directory Builds/Web
+```
+
+سپس `http://localhost:8080` را باز کنید. خروجی با Gzip و Decompression Fallback ساخته می‌شود، بنابراین به تنظیم Content-Encoding در میزبان نیاز ندارد. فایل `_headers` تنظیمات Cloudflare Pages را همراه خروجی قرار می‌دهد. ساخت وب اندازهٔ تک‌تک فایل‌ها را با محدودیت ۲۵ MiB در Pages بررسی می‌کند.
+
+برای انتشار مجدد، Node.js 22 یا جدیدتر را انتخاب کنید و با Wrangler وارد حساب شوید. اسکریپت از Wrangler 4.147.0 استفاده می‌کند:
+
+```sh
+nvm use 22
+npx --yes wrangler@4.147.0 login
+export CLOUDFLARE_ACCOUNT_ID="YOUR_ACCOUNT_ID"
+Tools/deploy-web.command
+```
+
+پروژهٔ Pages با نام `itetris` و شاخهٔ اصلی `main` استفاده می‌شود. دامنهٔ مورد نظر `itetris.iboum.ir` است. این انتشار از نوع Direct Upload است؛ پوش سورس به GitHub به‌تنهایی بازی را دوباره نمی‌سازد یا منتشر نمی‌کند.

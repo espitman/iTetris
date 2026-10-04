@@ -71,6 +71,27 @@ namespace iTetris.Editor
             if(report.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new Exception("macOS build failed: "+report.summary.result);
             Debug.Log("ITETRIS_BUILD_SUCCEEDED "+report.summary.totalSize);
         }
+        [MenuItem("iTetris/Build Web")]
+        public static void BuildWeb()
+        {
+            Prepare();
+            PlayerSettings.WebGL.compressionFormat=WebGLCompressionFormat.Gzip;
+            PlayerSettings.WebGL.decompressionFallback=true;
+            PlayerSettings.WebGL.dataCaching=true;
+            PlayerSettings.WebGL.nameFilesAsHashes=true;
+            PlayerSettings.WebGL.template="PROJECT:Aurora";
+            PlayerSettings.SetScriptingBackend(NamedBuildTarget.WebGL,ScriptingImplementation.IL2CPP);
+            PlayerSettings.SetManagedStrippingLevel(NamedBuildTarget.WebGL,ManagedStrippingLevel.High);
+            PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL,new[]{GraphicsDeviceType.OpenGLES3});
+            PlayerSettings.WebGL.exceptionSupport=WebGLExceptionSupport.ExplicitlyThrownExceptionsOnly;
+            var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=new[]{"Assets/Scenes/iTetris.unity"},locationPathName="Builds/Web",target=BuildTarget.WebGL,options=BuildOptions.None});
+            if(report.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new Exception("Web build failed: "+report.summary.result);
+            File.Copy("Tools/cloudflare-headers","Builds/Web/_headers",true);
+            File.WriteAllText("Builds/Web/_redirects","/* /index.html 200\n");
+            foreach(var file in Directory.GetFiles("Builds/Web","*",SearchOption.AllDirectories))
+                if(new FileInfo(file).Length>25L*1024*1024)throw new Exception("Cloudflare Pages asset exceeds 25 MiB: "+file);
+            Debug.Log("ITETRIS_WEB_BUILD_SUCCEEDED "+report.summary.totalSize);
+        }
         public static void RunRulesTests()
         {
             var path=Path.GetFullPath("Documentation/RulesTests.txt");
