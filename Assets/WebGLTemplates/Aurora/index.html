@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#06111e">
-<meta name="description" content="A crystal Tetris game beneath the aurora. Play Marathon or unwind in Zen mode.">
-<title>iTetris · Crystal / Aurora</title>
+<meta name="description" content="Crystal Arcade: play Tetris and Brick Garden beneath the aurora.">
+<title>Crystal Arcade · Tetris &amp; Brick Garden</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#06111e;color:#c4e5ee;font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif}body{overflow:hidden}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer;color:#c4e5ee;background:#102b39;border:1px solid #2e5e6d;border-radius:9px;padding:8px 15px}button:hover{background:#174556}button:focus-visible,a:focus-visible{outline:2px solid #7cdee8;outline-offset:4px}main{height:100%;height:100dvh;width:100%;position:relative}#game{position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(100%,160dvh);height:100%;display:block;outline:none}#loading{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 30%,#103844,#06111e 70%);text-align:center;padding:24px}.loading-card{max-width:430px}.mark{display:flex;gap:5px;justify-content:center;margin-bottom:36px}.mark i{display:block;width:38px;height:38px;background:linear-gradient(135deg,#b6ffff,#26adc1 35%,#0e3449 60%,#62dcea);border:1px solid #75f1f4;box-shadow:0 0 25px #39c7dd30}.loading-card h1{font-weight:300;font-size:40px;letter-spacing:8px;margin:0 0 14px}.loading-card p{font-size:13px;line-height:1.8;color:#86aab8}.loading-card .tag{letter-spacing:3px;font-size:10px;margin-bottom:36px}progress{width:100%;height:4px;display:block;margin:26px 0 16px;accent-color:#4bcfda}#status{font-size:12px;color:#a3c8d4}#error{color:#ffc2cd;font-size:13px;line-height:1.7;white-space:pre-wrap}#retry{display:none;margin:15px auto}#mobile{display:none;position:absolute;bottom:8px;left:10px;right:10px;border-radius:8px;background:#06111ee8;padding:10px;color:#a3c8d4;font-size:12px;text-align:center;pointer-events:none}@media(max-width:850px){#mobile{display:block}}
 </style>
@@ -13,7 +13,7 @@
 <body>
 <main id="stage">
 <canvas id="game" width="1600" height="1000" tabindex="0" aria-label="iTetris game. Use arrow keys to move and rotate, space to drop, C to hold, and Escape to pause."></canvas>
-<div id="loading" role="status" aria-live="polite"><div class="loading-card"><div class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h1>iTetris</h1><p class="tag">CRYSTAL / AURORA</p><p>Find your flow beneath the northern lights.</p><progress id="progress" max="1" value="0"></progress><div id="status">Preparing the game…</div><div id="error"></div><button id="retry" type="button">Try again</button><p>Arrow keys · Space to drop · C to hold<br>Best played on a computer with a keyboard.</p></div></div>
+<div id="loading" role="status" aria-live="polite"><div class="loading-card"><div class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h1>Crystal Arcade</h1><p class="tag">CRYSTAL / AURORA</p><p>Find your flow beneath the northern lights.</p><progress id="progress" max="1" value="0"></progress><div id="status">Preparing the game…</div><div id="error"></div><button id="retry" type="button">Try again</button><p>Tetris · Brick Garden<br>Choose a game from the library. Best played on a computer.</p></div></div>
 <div id="mobile">This version uses a keyboard. Open it on a computer for the full experience.</div>
 </main>
 <script>

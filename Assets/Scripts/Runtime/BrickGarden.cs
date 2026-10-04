@@ -114,7 +114,7 @@ namespace iTetris
             gardenMenu.SetActive(false);
             gardenHelp=Panel(root,Vector2.zero,new Vector2(730,620),new Color(.015f,.035f,.06f,.99f)).gameObject;
             Label(gardenHelp.transform,"HOW TO GROW",new Vector2(0,245),new Vector2(650,60),32,Pale);
-            Label(gardenHelp.transform,"Select a crystal, then click an equal-level neighbour.\nThe two crystals merge on the second tile.\nOnly side-by-side tiles can merge, not diagonals.\n\nClick an empty tile to plant the NEXT crystal.\nMerging frees space and earns points.\n\nGrow a level 8 crystal to make the garden bloom.\nKeep playing for a higher score.\nA full board with no matching neighbours ends the game.\n\nYour garden saves automatically on this Mac.",new Vector2(0,0),new Vector2(660,410),18,Pale);
+            Label(gardenHelp.transform,"Select a crystal, then click an equal-level neighbour.\nThe two crystals merge on the second tile.\nOnly side-by-side tiles can merge, not diagonals.\n\nClick an empty tile to plant the NEXT crystal.\nMerging frees space and earns points.\n\nGrow a level 8 crystal to make the garden bloom.\nKeep playing for a higher score.\nA full board with no matching neighbours ends the game.\n\nYour garden saves automatically on this device.",new Vector2(0,0),new Vector2(660,410),18,Pale);
             ButtonAt(gardenHelp.transform,"LET'S GROW",new Vector2(0,-244),new Vector2(280,52),()=>{gardenHelp.SetActive(false);gardenPaused=gardenMenu.activeSelf;},true);gardenHelp.SetActive(false);
         }
         static GameObject GardenMeshObject(string name,Transform parent,Mesh mesh,Material material)

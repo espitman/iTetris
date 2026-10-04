@@ -55,9 +55,7 @@ namespace iTetris
             audioWorld=gameObject.AddComponent<Soundscape>();audioWorld.Initialize();UpdateSound();
             game=new TetrisGame();game.Changed+=()=>dirty=true;game.Locked+=OnLock;game.Ended+=()=>endedPending=true;
             DrawAttract();ShowMenu("iTetris","CRYSTAL / AURORA", "PLAY",false);
-            #if !UNITY_WEBGL || UNITY_EDITOR
             BuildHub();OpenHub();
-            #endif
             #if !UNITY_WEBGL || UNITY_EDITOR
             var launchArgs=Environment.GetCommandLineArgs();
             gardenNoSave=Array.IndexOf(launchArgs,"--smoke-test")>=0||Array.IndexOf(launchArgs,"--garden-capture")>=0;
@@ -158,11 +156,7 @@ namespace iTetris
             primaryButton=ButtonAt(overlay,"PLAY",new Vector2(0,15),new Vector2(275,58),()=>PrimaryAction(),true);
             secondaryButton=ButtonAt(overlay,"NEW GAME",new Vector2(0,-61),new Vector2(275,46),()=>StartGame());
             ButtonAt(overlay,"MARATHON  /  ZEN",new Vector2(0,-135),new Vector2(275,40),()=>{zen=!zen;modeText.text=zen?"ZEN · NO GRAVITY":"MARATHON";RefreshMenuMode();});
-            #if UNITY_WEBGL && !UNITY_EDITOR
-            ButtonAt(overlay,"HELP",new Vector2(0,-182),new Vector2(100,30),()=>ToggleHelp());
-#else
             ButtonAt(overlay,"GAME HUB",new Vector2(0,-182),new Vector2(160,30),()=>OpenHub());
-#endif
             Label(overlay,"SPACE TO PLAY  ·  ESC TO PAUSE",new Vector2(0,-224),new Vector2(370,26),10,Muted);
             helpPanel=Panel(root,Vector2.zero,new Vector2(750,660),new Color(.015f,.035f,.06f,.99f)).gameObject;
             Label(helpPanel.transform,"HOW TO PLAY",new Vector2(0,255),new Vector2(650,60),32,Pale);

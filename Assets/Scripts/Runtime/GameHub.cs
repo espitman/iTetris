@@ -51,12 +51,24 @@ namespace iTetris
         }
         void BuildHubExitButton(Transform root)
         {
-            var button=ButtonAt(root,"",new Vector2(675,421),new Vector2(142,48),()=>Application.Quit());
+            var button=ButtonAt(root,"",new Vector2(675,421),new Vector2(142,48),()=>{
+                #if UNITY_WEBGL && !UNITY_EDITOR
+                Screen.fullScreen=!Screen.fullScreen;
+                #else
+                Application.Quit();
+                #endif
+            });
             button.gameObject.name="Exit game";
             button.GetComponent<Image>().color=new Color(.14f,.04f,.07f,.95f);
             var rim=button.gameObject.AddComponent<Outline>();rim.effectColor=new Color(.87f,.32f,.43f,.75f);rim.effectDistance=Vector2.one;
             var colors=button.colors;colors.highlightedColor=new Color(1,.68f,.75f);colors.pressedColor=new Color(.8f,.3f,.4f);button.colors=colors;
-            var caption=button.GetComponentInChildren<Text>();caption.text="EXIT GAME";caption.fontSize=13;caption.color=new Color(.96f,.72f,.77f);caption.rectTransform.anchoredPosition=new Vector2(15,0);
+            var caption=button.GetComponentInChildren<Text>();
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            caption.text="FULL SCREEN";
+            #else
+            caption.text="EXIT GAME";
+            #endif
+            caption.fontSize=13;caption.color=new Color(.96f,.72f,.77f);caption.rectTransform.anchoredPosition=new Vector2(15,0);
             caption.rectTransform.sizeDelta=new Vector2(102,40);
             var icon=UIObject("Power icon",button.transform,new Vector2(-49,0),new Vector2(21,21));
             var image=icon.gameObject.AddComponent<Image>();image.raycastTarget=false;image.color=new Color(1,.57f,.66f);

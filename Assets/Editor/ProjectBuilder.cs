@@ -75,6 +75,14 @@ namespace iTetris.Editor
         public static void BuildWeb()
         {
             Prepare();
+            // Desktop WebGL textures use GPU compression to fit the Pages asset limit.
+            foreach(string guid in AssetDatabase.FindAssets("t:Texture2D",new[]{"Assets/Resources/Art"}))
+            {
+                var importer=(TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GUIDToAssetPath(guid));
+                var web=importer.GetPlatformTextureSettings("WebGL");web.overridden=true;web.maxTextureSize=2048;
+                web.format=TextureImporterFormat.DXT5;web.textureCompression=TextureImporterCompression.CompressedHQ;web.compressionQuality=100;
+                importer.SetPlatformTextureSettings(web);importer.SaveAndReimport();
+            }
             PlayerSettings.WebGL.compressionFormat=WebGLCompressionFormat.Gzip;
             PlayerSettings.WebGL.decompressionFallback=true;
             PlayerSettings.WebGL.dataCaching=true;
@@ -87,7 +95,7 @@ namespace iTetris.Editor
             var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=new[]{"Assets/Scenes/iTetris.unity"},locationPathName="Builds/Web",target=BuildTarget.WebGL,options=BuildOptions.None});
             if(report.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new Exception("Web build failed: "+report.summary.result);
             File.Copy("Tools/cloudflare-headers","Builds/Web/_headers",true);
-            File.WriteAllText("Builds/Web/_redirects","/* /index.html 200\n");
+            if(File.Exists("Builds/Web/_redirects"))File.Delete("Builds/Web/_redirects");
             foreach(var file in Directory.GetFiles("Builds/Web","*",SearchOption.AllDirectories))
                 if(new FileInfo(file).Length>25L*1024*1024)throw new Exception("Cloudflare Pages asset exceeds 25 MiB: "+file);
             Debug.Log("ITETRIS_WEB_BUILD_SUCCEEDED "+report.summary.totalSize);
