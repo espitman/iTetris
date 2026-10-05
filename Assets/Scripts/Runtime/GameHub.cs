@@ -100,9 +100,9 @@ namespace iTetris
             Label(card,genre,new Vector2(0,-70),new Vector2(460,24),11,Muted);
             Label(card,title,new Vector2(0,-111),new Vector2(460,60),36,Pale);
             Label(card,description,new Vector2(0,-163),new Vector2(480,38),15,Muted);
-            hubPlayButtons[index]=ButtonAt(card,index<2?"PLAY":"COMING SOON",new Vector2(0,-230),new Vector2(360,52),()=>{SelectHubGame(index);PrimaryHubAction();},index<2);
-            hubPlayButtons[index].interactable=index<2;
-            if(index>1)Label(pictureFrame,"CONCEPT PREVIEW",new Vector2(0,-123),new Vector2(472,25),10,Color.white);
+            hubPlayButtons[index]=ButtonAt(card,(index<2||(index==2&&BreakerAvailable))?"PLAY":"COMING SOON",new Vector2(0,-230),new Vector2(360,52),()=>{SelectHubGame(index);PrimaryHubAction();},(index<2||(index==2&&BreakerAvailable)));
+            hubPlayButtons[index].interactable=(index<2||(index==2&&BreakerAvailable));
+            if(index>1&&!(index==2&&BreakerAvailable))Label(pictureFrame,"CONCEPT PREVIEW",new Vector2(0,-123),new Vector2(472,25),10,Color.white);
         }
         void SelectHubGame(int index)
         {
@@ -124,10 +124,11 @@ namespace iTetris
             paused=started&&!game.GameOver;
             helpPanel.SetActive(false);ResetInput();
             if(gardenWorld!=null){SaveGarden();gardenActive=false;gardenWorld.SetActive(false);gardenUi.SetActive(false);}
+            if(breakerWorld!=null){breakerActive=false;breakerWorld.SetActive(false);breakerUi.SetActive(false);}
             hubVisible=true;tetrisWorld.SetActive(false);tetrisUiRoot.SetActive(false);hubRoot.SetActive(true);
             SelectHubGame(selectedHubGame);UpdateHubSound();
         }
-        void PrimaryHubAction(){if(selectedHubGame==0){OpenTetris();PrimaryAction();}else if(selectedHubGame==1)OpenGarden();}
+        void PrimaryHubAction(){if(selectedHubGame==0){OpenTetris();PrimaryAction();}else if(selectedHubGame==1)OpenGarden();else if(selectedHubGame==2)OpenBreaker();}
         void OpenTetris()
         {
             SetMobileOrientation(true);

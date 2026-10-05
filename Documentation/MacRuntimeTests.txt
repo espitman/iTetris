@@ -1,0 +1,41 @@
+SMOKE PASS: macOS starts fullscreen
+SMOKE PASS: hub is the native startup screen
+SMOKE PASS: Brick Garden is playable in hub
+SMOKE PASS: garden opens independently of Tetris
+SMOKE PASS: garden tile selection merges neighbours
+SMOKE PASS: garden places preview on empty tile
+SMOKE PASS: garden tile collider accepts mouse ray
+SMOKE PASS: garden save payload round trips
+SMOKE PASS: garden pause menu
+SMOKE PASS: garden resumes
+SMOKE PASS: garden returns to hub
+SMOKE PASS: garden state survives hub navigation
+SMOKE PASS: garden ends when full without matching neighbours
+SMOKE PASS: new garden restarts after completion
+SMOKE PASS: library scrolls to last game
+SMOKE PASS: Crystal Breaker card is playable on Mac
+SMOKE PASS: breaker opens from its card
+SMOKE PASS: breaker powerups are rendered
+SMOKE PASS: breaker resumes from hub
+SMOKE PASS: breaker restart resets game
+SMOKE PASS: upcoming card 3 stays unavailable
+SMOKE PASS: upcoming card 4 stays unavailable
+SMOKE PASS: upcoming card 5 stays unavailable
+SMOKE PASS: Tetris opens from hub
+SMOKE PASS: return to hub freezes current game
+SMOKE PASS: card resume returns directly to Tetris
+SMOKE PASS: start menu closes
+SMOKE PASS: hold input action
+SMOKE PASS: held piece is rendered
+SMOKE PASS: move and rotate actions
+SMOKE PASS: drop updates score
+SMOKE PASS: line clear animation starts
+SMOKE PASS: line clear finishes with correct score
+SMOKE PASS: pause menu opens
+SMOKE PASS: resume closes menu
+SMOKE PASS: help pauses game
+SMOKE PASS: help restores play
+SMOKE PASS: sound toggle
+SMOKE PASS: game over menu
+SMOKE PASS: restart resets game
+ALL RUNTIME SMOKE TESTS PASSED

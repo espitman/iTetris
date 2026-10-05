@@ -64,6 +64,7 @@ namespace iTetris
             using(var intent=activity.Call<AndroidJavaObject>("getIntent"))
                 if(intent.Call<string>("getStringExtra","crystalTest")=="smoke")launchArgs=new[]{"--smoke-test"};
             #endif
+            if(Array.IndexOf(launchArgs,"--breaker-capture")>=0){Application.runInBackground=true;StartCoroutine(BreakerCapture());}
             gardenNoSave=Array.IndexOf(launchArgs,"--smoke-test")>=0||Array.IndexOf(launchArgs,"--garden-capture")>=0;
             if(Array.IndexOf(launchArgs,"--garden-capture")>=0){Application.runInBackground=true;StartCoroutine(GardenCapture());}
             if(Array.IndexOf(launchArgs,"--visual-test")>=0||Array.IndexOf(launchArgs,"--smoke-test")>=0)diagnosticBest=best;
@@ -240,6 +241,7 @@ namespace iTetris
 #endif
             if(hubVisible){HandleHubInput();UpdateAtmosphere();return;}
             if(gardenActive){UpdateGarden();return;}
+            if(breakerActive){UpdateBreaker();return;}
             if(helpPanel.activeSelf){if(Input.GetKeyDown(KeyCode.Escape))ToggleHelp();}
             else if(!started||game.GameOver)
             {if(Input.GetKeyDown(KeyCode.Space)||Input.GetKeyDown(KeyCode.Return))StartGame();}
@@ -369,7 +371,7 @@ namespace iTetris
             audioWorld.Play("end");PlayerPrefs.Save();
             ShowMenu("GAME OVER","SCORE  "+game.Score.ToString("N0")+"\nLINES  "+game.Lines+"   ·   LEVEL  "+game.Level,"PLAY AGAIN",false);
         }
-        void OnApplicationFocus(bool focus){if(Application.platform==RuntimePlatform.Android)return;if(gardenActive){if(!focus&&!gardenPaused)PauseGarden();return;}if(!focus&&started&&!paused&&!game.GameOver)TogglePause();}
+        void OnApplicationFocus(bool focus){if(Application.platform==RuntimePlatform.Android)return;if(breakerActive){if(!focus)breakerPaused=true;return;}if(gardenActive){if(!focus&&!gardenPaused)PauseGarden();return;}if(!focus&&started&&!paused&&!game.GameOver)TogglePause();}
         void OnApplicationQuit(){SaveGarden();if(diagnosticBest.HasValue)PlayerPrefs.SetInt("BestScore",diagnosticBest.Value);PlayerPrefs.Save();}
         #if !UNITY_WEBGL || UNITY_EDITOR
         static void Check(bool condition,string name){if(!condition)throw new Exception("SMOKE FAILED: "+name);Debug.Log("SMOKE PASS: "+name);}
@@ -395,7 +397,8 @@ namespace iTetris
             for(int i=0;i<16;i++)testGarden[i]=(i%4+i/4)%2+1;garden.Restore(testGarden,100,20,1);DrawGarden();Check(gardenPaused&&gardenMenu.activeSelf&&gardenMenuTitle.text=="GARDEN COMPLETE","garden ends when full without matching neighbours");
             RestartGarden();Check(!gardenPaused&&garden.Score==0&&garden.HasMoves,"new garden restarts after completion");OpenHub();
             SelectHubGame(5);Check(selectedHubGame==5&&hubScroll.horizontalNormalizedPosition>.99f,"library scrolls to last game");
-            for(int i=2;i<HubGameCount;i++){SelectHubGame(i);PrimaryHubAction();Check(hubVisible&&!hubPlayButtons[i].interactable,"upcoming card "+i+" stays unavailable");}
+            if(BreakerAvailable){SelectHubGame(2);Check(hubPlayButtons[2].interactable,"Crystal Breaker card is playable on Mac");PrimaryHubAction();Check(breakerActive&&!hubVisible&&breakerWorld.activeSelf,"breaker opens from its card");breaker.Launch();breaker.Power(true);breaker.Power(false);DrawBreaker();Check(breakerBalls.Count>=2&&breakerPaddle.transform.localScale.x>4,"breaker powerups are rendered");breakerPaused=true;int scoreBefore=breaker.Score;OpenHub();PrimaryHubAction();Check(breakerActive&&!breakerPaused&&breaker.Score==scoreBefore,"breaker resumes from hub");NewBreaker();Check(breaker.Score==0&&breaker.Lives==3&&breaker.Waiting,"breaker restart resets game");OpenHub();}
+            for(int i=BreakerAvailable?3:2;i<HubGameCount;i++){SelectHubGame(i);PrimaryHubAction();Check(hubVisible&&!hubPlayButtons[i].interactable,"upcoming card "+i+" stays unavailable");}
             SelectHubGame(0);PrimaryHubAction();Check(!hubVisible&&tetrisWorld.activeSelf&&tetrisUiRoot.activeSelf,"Tetris opens from hub");
             StartGame();zen=true;
             int hubScore=game.Score,hubY=game.Y;OpenHub();yield return new WaitForSecondsRealtime(.2f);

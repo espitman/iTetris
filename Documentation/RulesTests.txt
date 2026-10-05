@@ -28,3 +28,18 @@ PASS: invalid saves rejected
 PASS: bad ranks reject atomically
 PASS: restart resets progress
 All 14 garden rule checks passed.
+
+PASS: breaker initial stage and serve
+PASS: paddle clamps and carries served ball
+PASS: launch starts ball
+PASS: side wall reflects ball
+PASS: paddle steers upward with minimum vertical speed
+PASS: wide power enlarges paddle
+PASS: multiball creates extra ball
+PASS: loss consumes one life and serves
+PASS: fast ball hits armored brick without tunneling
+PASS: last brick scores and advances stage
+PASS: final stage victory
+PASS: falling power is caught by paddle
+PASS: wide power expires
+PASS: three losses end game
