@@ -38,6 +38,8 @@ namespace iTetris.Editor
             foreach(string guid in AssetDatabase.FindAssets("t:Texture2D",new[]{"Assets/Resources/Art"}))
             {
                 var importer=(TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GUIDToAssetPath(guid));
+                if(importer.assetPath.Contains("/Breaker")&&(importer.npotScale!=TextureImporterNPOTScale.None||!importer.alphaIsTransparency))
+                {importer.npotScale=TextureImporterNPOTScale.None;importer.alphaIsTransparency=true;importer.SaveAndReimport();}
                 if(importer.maxTextureSize!=2048||importer.textureCompression!=TextureImporterCompression.Uncompressed||importer.mipmapEnabled)
                 {importer.maxTextureSize=2048;importer.textureCompression=TextureImporterCompression.Uncompressed;importer.mipmapEnabled=false;importer.SaveAndReimport();}
             }
@@ -47,6 +49,9 @@ namespace iTetris.Editor
                 string path="Assets/Resources/Materials/CrystalGlass"+i+".mat";
                 if(AssetDatabase.LoadAssetAtPath<Material>(path)==null)AssetDatabase.CreateAsset(CrystalView.Lit(CrystalView.Palette[i],.35f,.87f,CrystalView.Palette[i]*.16f),path);
             }
+            string trailPath="Assets/Resources/Materials/BreakerTrail.mat";
+            if(AssetDatabase.LoadAssetAtPath<Material>(trailPath)==null)
+                AssetDatabase.CreateAsset(new Material(Shader.Find("iTetris/BreakerLightTrail")),trailPath);
             string[] names={"OpaqueEdge","TransparentEdge","Background"};
             for(int i=0;i<3;i++)
             {

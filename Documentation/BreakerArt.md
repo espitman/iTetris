@@ -1,0 +1,30 @@
+# Crystal Breaker — تطبیق با مرجع
+
+مرجع کاربر در `Documentation/CrystalBreakerReference.png` و تصویر خروجی واقعی Unity در `Documentation/CrystalBreaker.png` ذخیره شده‌اند. تصویر خروجی از یک پرواز آزمایشی توپ در مرحلهٔ اول گرفته شده است؛ شمارهٔ مرحله و امتیاز در بازی از وضعیت واقعی آن خوانده می‌شوند.
+
+## دارایی‌ها و چیدمان
+
+- `Assets/Resources/Art/BreakerLandscape.png`: منظرهٔ مستقل بدون آجر، توپ، سکو، قاب یا نوشته؛ رندر روی سطح ۴۰×۲۵.
+- `Assets/Resources/Art/BreakerSprites.png`: اطلس RGBA با ابعاد ۱۵۳۶×۱۰۲۴، شامل چهار آجر فیروزه‌ای/آبی/بنفش/طلایی، سکو، توپ، خرده‌شیشه و درخشش برخورد. آلفای دارایی حفظ شده و برش‌ها و محورهای هر شیء در `LoadBreakerSprites` تنظیم شده‌اند.
+- `Assets/Shaders/BreakerLightTrail.shader`: رد نور واقعی TrailRenderer با محوشدن عرض و طول، برای توپ‌های متحرک.
+- قاب نورانی و تزئینات لوزی با هندسهٔ خود Unity ساخته شده‌اند. اطلاعات بالای صفحه فونت serif نصب‌شدهٔ macOS را استفاده می‌کنند؛ فایل فونت سیستم در مخزن کپی نشده است.
+
+زمین از نوار بالایی تا قاب پایین امتداد دارد. آجرها در چهار ردیف و هشت ستون با پنج جای خالی مطابق مرجع قرار گرفته‌اند. سکو و توپ در مختصات قوانین حرکت می‌کنند و تبدیل یکنواخت ۱٫۶۳ برای موقعیت رندر و تبدیل معکوس ورودی ماوس استفاده می‌شود. اندازهٔ برخورد سکو و آجرها با اندازهٔ تصویری هماهنگ است. بهترین امتیاز، راهنما و دکمه‌های خروج به هاب و شروع دوباره داخل منوی توقف هستند. Combo امتیاز واقعی دارد و با تماس سکو صفر می‌شود.
+
+## تولید تصاویر
+
+دارایی‌ها با ابزار داخلی `image_gen` و مهارت imagegen، با همان تصویر کاربر به‌عنوان edit target ساخته شدند. خروجی انتخاب‌شده از پوشهٔ generated_images به مسیرهای پروژهٔ بالا کپی شد. پرامپت‌های نهایی:
+
+### منظره
+
+> Use case: precise-object-edit. Edit target: attached Crystal Breaker game reference. Produce a clean background plate ONLY for this live Unity game. Remove ALL HUD lettering, score, title, lives, pause button, border/frame, diamonds, ALL bricks, ALL ball/trail/sparks, paddle and paddle reflection. Inpaint those areas seamlessly with the existing underlying landscape. Preserve exact mountain silhouette, horizon at 69 percent image height, deep navy starfield, sweeping cyan aurora, snowy mountains, shore and dark lake reflections, exact palette and panoramic composition. No game objects, no text, no border. Aspect 16:10, high resolution. Keep the reference landscape as identical as possible.
+
+### اطلس کریستال‌ها
+
+> Use case: background-extraction. Input image: source design for exact asset extraction. Generate a transparent game sprite sheet 1536x1024, a strict grid of 4 columns by 2 rows, 8 cells each 384x512. Each cell fully transparent outside its ONE isolated object. Extract/reproduce exact faceted polished rectangular beveled glass bricks seen in the reference, luminous thin white cyan rim, irregular overlapping translucent diamond/triangle facets, detailed light refracting interior, frontal orthographic view, NO perspective. Top row cells left to right: cyan brick, deep sapphire blue brick, violet brick, pale champagne gold brick. Each brick centered at the exact center of its cell, visible width 320 px and height 130 px, identical silhouette, generous transparent padding, no shadows behind bricks and no labels. Bottom row: cell 1 a long transparent cyan crystal PADDLE with angular pointed diamond end caps identical to the reference paddle, width 340 and height 40 centered; cell 2 one luminous cyan-white BALL circular pearl diameter 100 centered with soft cyan glow; cell 3 a small isolated sharp glass diamond crystal SHARD cyan, 70x110 centered; cell 4 a diffuse circular pale cyan IMPACT GLOW with white core and rays, diameter 220 centered. No lettering, NO checkerboard, no opaque backgrounds. Preserve source design crystal texture and realistic refraction.
+
+خروجی اطلس دقیقاً شبکهٔ درخواستی را رعایت نکرد؛ برش‌های ردیف دوم و اندازه‌های رندر با آلفای واقعی آن کالیبره شدند. هیچ تصویر ثابت از آجرها یا سکو داخل منظره باقی نمانده است.
+
+## اعتبارسنجی
+
+۴۳ بررسی قوانین با `dotnet run --project Tools/RulesTests.csproj`؛ نتایج در `Documentation/RulesTests.txt`. ۴۴ بررسی اجرایی مک با `--smoke-test` شامل هاب، سه بازی، نمایش هدر، آجرهای مستقل، توقف و ادامه و قدرت‌ها است؛ نتایج در `Documentation/MacRuntimeTests.txt`. خروجی مک Universal برای arm64 و x86_64 است. خروجی وب و Android در این تغییر ساخته یا منتشر نشده‌اند.

@@ -43,3 +43,5 @@ PASS: final stage victory
 PASS: falling power is caught by paddle
 PASS: wide power expires
 PASS: three losses end game
+PASS: consecutive crystal breaks award combo score
+PASS: paddle contact resets combo

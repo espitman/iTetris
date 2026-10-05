@@ -15,6 +15,10 @@ SMOKE PASS: new garden restarts after completion
 SMOKE PASS: library scrolls to last game
 SMOKE PASS: Crystal Breaker card is playable on Mac
 SMOKE PASS: breaker opens from its card
+SMOKE PASS: reference header renders serif score, level and three lives
+SMOKE PASS: reference layout uses independent faceted crystal sprites
+SMOKE PASS: breaker pause reveals navigation menu
+SMOKE PASS: breaker resume clears playfield menu
 SMOKE PASS: breaker powerups are rendered
 SMOKE PASS: breaker resumes from hub
 SMOKE PASS: breaker restart resets game
