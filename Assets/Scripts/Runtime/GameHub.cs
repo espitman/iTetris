@@ -27,7 +27,7 @@ namespace iTetris
             wash.gameObject.AddComponent<Image>().color=new Color(.012f,.029f,.05f,.5f);
             Label(root,"C R Y S T A L   A R C A D E",new Vector2(0,402),new Vector2(1100,65),39,Pale);
             Label(root,"A LITTLE SPACE TO PLAY",new Vector2(0,344),new Vector2(900,32),13,Muted);
-            var sound=ButtonAt(root,"",new Vector2(-685,421),new Vector2(120,38),()=>{audioWorld.Toggle();UpdateSound();UpdateHubSound();});
+            var sound=ButtonAt(root,"",new Vector2(-685,421),mobileMode?new Vector2(160,64):new Vector2(120,38),()=>{audioWorld.Toggle();UpdateSound();UpdateHubSound();});
             hubSoundText=sound.GetComponentInChildren<Text>();
             BuildHubExitButton(root);
             var viewport=UIObject("Horizontal game library",root,new Vector2(0,-12),new Vector2(HubViewportWidth,614));
@@ -44,14 +44,14 @@ namespace iTetris
             HubCard(content,3,"Light Path","LOGIC PUZZLE","Reflect the light. Illuminate the way.","Art/HubLightPath");
             HubCard(content,4,"Orbit Rings","COLOR PUZZLE","Turn the rings. Find your harmony.","Art/HubOrbitRings");
             HubCard(content,5,"Glass Tower","PRECISION ARCADE","Stack with care. Reach a little higher.","Art/HubGlassTower");
-            hubPrevious=ButtonAt(root,"←",new Vector2(-710,-12),new Vector2(62,62),()=>SelectHubGame(selectedHubGame-1));
-            hubNext=ButtonAt(root,"→",new Vector2(710,-12),new Vector2(62,62),()=>SelectHubGame(selectedHubGame+1));
-            Label(root,"← / →  SELECT     ENTER  PLAY     M  SOUND",new Vector2(0,-466),new Vector2(1000,28),11,Muted);
+            hubPrevious=ButtonAt(root,"←",new Vector2(-710,-12),mobileMode?new Vector2(88,88):new Vector2(62,62),()=>SelectHubGame(selectedHubGame-1));
+            hubNext=ButtonAt(root,"→",new Vector2(710,-12),mobileMode?new Vector2(88,88):new Vector2(62,62),()=>SelectHubGame(selectedHubGame+1));
+            if(!mobileMode)Label(root,"← / →  SELECT     ENTER  PLAY     M  SOUND",new Vector2(0,-466),new Vector2(1000,28),11,Muted);
             SelectHubGame(0);UpdateHubSound();
         }
         void BuildHubExitButton(Transform root)
         {
-            var button=ButtonAt(root,"",new Vector2(675,421),new Vector2(142,48),()=>{
+            var button=ButtonAt(root,"",new Vector2(675,421),mobileMode?new Vector2(180,64):new Vector2(142,48),()=>{
                 #if UNITY_WEBGL && !UNITY_EDITOR
                 Screen.fullScreen=!Screen.fullScreen;
                 #else
@@ -119,6 +119,7 @@ namespace iTetris
         void UpdateHubSound(){if(hubSoundText!=null)hubSoundText.text=audioWorld.Muted?"SOUND OFF":"SOUND ON";}
         void OpenHub()
         {
+            SetMobileOrientation(false);
             if(hubRoot==null)return;
             paused=started&&!game.GameOver;
             helpPanel.SetActive(false);ResetInput();
@@ -129,6 +130,7 @@ namespace iTetris
         void PrimaryHubAction(){if(selectedHubGame==0){OpenTetris();PrimaryAction();}else if(selectedHubGame==1)OpenGarden();}
         void OpenTetris()
         {
+            SetMobileOrientation(true);
             hubVisible=false;if(hubRoot!=null)hubRoot.SetActive(false);
             tetrisWorld.SetActive(true);tetrisUiRoot.SetActive(true);ResetInput();
             if(started&&!game.GameOver){paused=true;ShowMenu("PAUSED","TAKE A BREATH","RESUME",true);}

@@ -61,6 +61,7 @@ namespace iTetris
 
         void OpenGarden()
         {
+            SetMobileOrientation(false);
             if(garden==null)BuildGarden();
             hubVisible=false;hubRoot.SetActive(false);tetrisWorld.SetActive(false);tetrisUiRoot.SetActive(false);
             gardenActive=true;gardenWorld.SetActive(true);gardenUi.SetActive(true);gardenPaused=false;gardenMenu.SetActive(false);gardenHelp.SetActive(false);shake=0;
@@ -94,17 +95,17 @@ namespace iTetris
             var left=Panel(root,new Vector2(-654,418),new Vector2(230,108),new Color(.02f,.06f,.1f,.5f));
             Label(left,"S C O R E",new Vector2(0,30),new Vector2(210,22),12,Muted);
             gardenScore=Label(left,"0",new Vector2(0,-14),new Vector2(210,50),32,Pale);
-            gardenBestText=Label(root,"",new Vector2(-627,-411),new Vector2(280,28),12,Muted);
-            gardenMoves=Label(root,"",new Vector2(-627,-442),new Vector2(280,28),12,Muted);
+            gardenBestText=Label(root,"",mobileMode?new Vector2(-654,334):new Vector2(-627,-411),new Vector2(280,40),12,Muted);
+            gardenMoves=Label(root,"",mobileMode?new Vector2(-654,295):new Vector2(-627,-442),new Vector2(280,40),12,Muted);
             var right=Panel(root,new Vector2(674,386),new Vector2(140,185),new Color(.02f,.06f,.1f,.5f));gardenNextPanel=right;
             Label(right,"N E X T",new Vector2(0,67),new Vector2(130,24),12,Pale);
             gardenNext=Label(right,"",new Vector2(0,-74),new Vector2(130,24),10,Muted);
-            ButtonAt(root,"GAME HUB",new Vector2(-676,-478),new Vector2(140,32),()=>OpenHub());
-            ButtonAt(root,"PAUSE",new Vector2(691,-475),new Vector2(90,34),()=>PauseGarden());
-            ButtonAt(root,"HELP",new Vector2(580,-475),new Vector2(90,34),()=>{gardenPaused=true;gardenHelp.SetActive(true);});
-            ButtonAt(root,"NEW GARDEN",new Vector2(429,-475),new Vector2(160,34),()=>ShowGardenMenu("A FRESH START?","Your current garden will be replaced.",true));
-            gardenStatus=Label(root,"Select two matching neighbours. Plant on empty tiles.",new Vector2(0,-416),new Vector2(780,36),14,Teal);
-            Label(root,"GROW A LEVEL 8 CRYSTAL TO MAKE YOUR GARDEN BLOOM",new Vector2(0,-453),new Vector2(900,24),10,Muted);
+            ButtonAt(root,"GAME HUB",mobileMode?new Vector2(-660,-460):new Vector2(-676,-478),mobileMode?new Vector2(200,64):new Vector2(140,32),()=>OpenHub());
+            ButtonAt(root,"PAUSE",mobileMode?new Vector2(700,-460):new Vector2(691,-475),mobileMode?new Vector2(140,64):new Vector2(90,34),()=>PauseGarden());
+            ButtonAt(root,"HELP",mobileMode?new Vector2(535,-460):new Vector2(580,-475),mobileMode?new Vector2(140,64):new Vector2(90,34),()=>{gardenPaused=true;gardenHelp.SetActive(true);});
+            ButtonAt(root,"NEW GARDEN",mobileMode?new Vector2(340,-460):new Vector2(429,-475),mobileMode?new Vector2(200,64):new Vector2(160,34),()=>ShowGardenMenu("A FRESH START?","Your current garden will be replaced.",true));
+            gardenStatus=Label(root,"Select two matching neighbours. Plant on empty tiles.",mobileMode?new Vector2(0,-394):new Vector2(0,-416),mobileMode?new Vector2(1000,64):new Vector2(780,36),14,Teal);
+            if(!mobileMode)Label(root,"GROW A LEVEL 8 CRYSTAL TO MAKE YOUR GARDEN BLOOM",new Vector2(0,-453),new Vector2(900,24),10,Muted);
             gardenMenu=Panel(root,Vector2.zero,new Vector2(600,470),new Color(.015f,.035f,.06f,.99f)).gameObject;
             gardenMenuTitle=Label(gardenMenu.transform,"",new Vector2(0,160),new Vector2(550,65),33,Pale);
             gardenMenuSubtitle=Label(gardenMenu.transform,"",new Vector2(0,88),new Vector2(550,70),16,Muted);
@@ -112,10 +113,10 @@ namespace iTetris
             ButtonAt(gardenMenu.transform,"NEW GARDEN",new Vector2(0,-63),new Vector2(300,46),()=>RestartGarden());
             ButtonAt(gardenMenu.transform,"GAME HUB",new Vector2(0,-128),new Vector2(300,42),()=>OpenHub());
             gardenMenu.SetActive(false);
-            gardenHelp=Panel(root,Vector2.zero,new Vector2(730,620),new Color(.015f,.035f,.06f,.99f)).gameObject;
-            Label(gardenHelp.transform,"HOW TO GROW",new Vector2(0,245),new Vector2(650,60),32,Pale);
-            Label(gardenHelp.transform,"Select a crystal, then click an equal-level neighbour.\nThe two crystals merge on the second tile.\nOnly side-by-side tiles can merge, not diagonals.\n\nClick an empty tile to plant the NEXT crystal.\nMerging frees space and earns points.\n\nGrow a level 8 crystal to make the garden bloom.\nKeep playing for a higher score.\nA full board with no matching neighbours ends the game.\n\nYour garden saves automatically on this device.",new Vector2(0,0),new Vector2(660,410),18,Pale);
-            ButtonAt(gardenHelp.transform,"LET'S GROW",new Vector2(0,-244),new Vector2(280,52),()=>{gardenHelp.SetActive(false);gardenPaused=gardenMenu.activeSelf;},true);gardenHelp.SetActive(false);
+            gardenHelp=Panel(root,Vector2.zero,mobileMode?new Vector2(840,840):new Vector2(730,620),new Color(.015f,.035f,.06f,.99f)).gameObject;
+            Label(gardenHelp.transform,"HOW TO GROW",mobileMode?new Vector2(0,330):new Vector2(0,245),new Vector2(750,60),32,Pale);
+            Label(gardenHelp.transform,"Select a crystal, then click an equal-level neighbour.\nThe two crystals merge on the second tile.\nOnly side-by-side tiles can merge, not diagonals.\n\nClick an empty tile to plant the NEXT crystal.\nMerging frees space and earns points.\n\nGrow a level 8 crystal to make the garden bloom.\nKeep playing for a higher score.\nA full board with no matching neighbours ends the game.\n\nYour garden saves automatically on this device.",new Vector2(0,0),mobileMode?new Vector2(780,600):new Vector2(660,410),18,Pale);
+            ButtonAt(gardenHelp.transform,"LET'S GROW",mobileMode?new Vector2(0,-350):new Vector2(0,-244),mobileMode?new Vector2(360,80):new Vector2(280,52),()=>{gardenHelp.SetActive(false);gardenPaused=gardenMenu.activeSelf;},true);gardenHelp.SetActive(false);
         }
         static GameObject GardenMeshObject(string name,Transform parent,Mesh mesh,Material material)
         {
@@ -198,10 +199,21 @@ namespace iTetris
             if(Input.GetKeyDown(KeyCode.UpArrow))row=Mathf.Max(0,row-1);if(Input.GetKeyDown(KeyCode.DownArrow))row=Mathf.Min(3,row+1);
             if(gardenCursor!=row*4+col){gardenKeyboardFocus=true;gardenCursor=row*4+col;UpdateGardenSelection();}
             if(Input.GetKeyDown(KeyCode.Return)||Input.GetKeyDown(KeyCode.Space))GardenClick(gardenCursor);
-            if(Input.GetMouseButtonDown(0)&&!EventSystem.current.IsPointerOverGameObject())
+            if(Input.touchCount>0)
             {
-                RaycastHit hit;if(Physics.Raycast(cameraMain.ScreenPointToRay(Input.mousePosition),out hit,100,1<<8)){gardenKeyboardFocus=false;GardenClick(hit.collider.GetComponent<GardenTile>().Index);}
+                for(int i=0;i<Input.touchCount;i++)
+                {
+                    var touch=Input.GetTouch(i);
+                    if(touch.phase==TouchPhase.Began&&!EventSystem.current.IsPointerOverGameObject(touch.fingerId))GardenPointer(touch.position);
+                }
             }
+            else if(Input.GetMouseButtonDown(0)&&!EventSystem.current.IsPointerOverGameObject())GardenPointer(Input.mousePosition);
+        }
+        void GardenPointer(Vector2 position)
+        {
+            if(!cameraMain.pixelRect.Contains(position))return;
+            RaycastHit hit;
+            if(Physics.Raycast(cameraMain.ScreenPointToRay(position),out hit,100,1<<8)){gardenKeyboardFocus=false;GardenClick(hit.collider.GetComponent<GardenTile>().Index);}
         }
         void ShowGardenMenu(string title,string subtitle,bool resume)
         {gardenPaused=true;gardenMenu.SetActive(true);gardenMenuTitle.text=title;gardenMenuSubtitle.text=subtitle;gardenResume.gameObject.SetActive(resume);}

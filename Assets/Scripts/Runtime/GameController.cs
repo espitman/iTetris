@@ -45,7 +45,7 @@ namespace iTetris
 
         void Start()
         {
-            Application.targetFrameRate=120;
+            ConfigureMobile();
             #if UNITY_STANDALONE_OSX && !UNITY_EDITOR
             Screen.fullScreenMode=FullScreenMode.FullScreenWindow;
             #endif
@@ -55,15 +55,21 @@ namespace iTetris
             audioWorld=gameObject.AddComponent<Soundscape>();audioWorld.Initialize();UpdateSound();
             game=new TetrisGame();game.Changed+=()=>dirty=true;game.Locked+=OnLock;game.Ended+=()=>endedPending=true;
             DrawAttract();ShowMenu("iTetris","CRYSTAL / AURORA", "PLAY",false);
-            BuildHub();OpenHub();
+            BuildHub();BuildTouchControls();OpenHub();
             #if !UNITY_WEBGL || UNITY_EDITOR
             var launchArgs=Environment.GetCommandLineArgs();
+            #if UNITY_ANDROID && !UNITY_EDITOR
+            using(var player=new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+            using(var activity=player.GetStatic<AndroidJavaObject>("currentActivity"))
+            using(var intent=activity.Call<AndroidJavaObject>("getIntent"))
+                if(intent.Call<string>("getStringExtra","crystalTest")=="smoke")launchArgs=new[]{"--smoke-test"};
+            #endif
             gardenNoSave=Array.IndexOf(launchArgs,"--smoke-test")>=0||Array.IndexOf(launchArgs,"--garden-capture")>=0;
             if(Array.IndexOf(launchArgs,"--garden-capture")>=0){Application.runInBackground=true;StartCoroutine(GardenCapture());}
             if(Array.IndexOf(launchArgs,"--visual-test")>=0||Array.IndexOf(launchArgs,"--smoke-test")>=0)diagnosticBest=best;
             if(Array.IndexOf(launchArgs,"--hub-capture")>=0){Application.runInBackground=true;StartCoroutine(HubCapture());}
             if(Array.IndexOf(launchArgs,"--visual-test")>=0){OpenTetris();Application.runInBackground=true;StartCoroutine(VisualCapture());}
-            if(Array.IndexOf(Environment.GetCommandLineArgs(),"--smoke-test")>=0){Application.runInBackground=true;StartCoroutine(SmokeTest());}
+            if(Array.IndexOf(launchArgs,"--smoke-test")>=0){Application.runInBackground=true;StartCoroutine(SmokeTest());}
 #endif
         }
         void BuildScene()
@@ -74,6 +80,7 @@ namespace iTetris
             cameraMain.backgroundColor=new Color(.01f,.025f,.05f);cameraMain.clearFlags=CameraClearFlags.SolidColor;
             cameraMain.allowHDR=true;cameraMain.nearClipPlane=.1f;cameraMain.farClipPlane=100;
             cameraMain.gameObject.AddComponent<AudioListener>();cameraMain.GetUniversalAdditionalCameraData().renderPostProcessing=true;
+            if(Application.platform==RuntimePlatform.Android)cameraMain.GetUniversalAdditionalCameraData().antialiasing=AntialiasingMode.FastApproximateAntialiasing;
             var volume=new GameObject("Aurora post processing").AddComponent<Volume>();volume.isGlobal=true;
             var profile=ScriptableObject.CreateInstance<VolumeProfile>();volume.profile=profile;
             var bloom=profile.Add<Bloom>();bloom.threshold.Override(1.1f);bloom.intensity.Override(.42f);bloom.scatter.Override(.6f);
@@ -120,6 +127,7 @@ namespace iTetris
             new GameObject("EventSystem",typeof(EventSystem),typeof(StandaloneInputModule));
             tetrisUiRoot=UIObject("Tetris interface",canvas.transform,Vector2.zero,new Vector2(1600,1000)).gameObject;
             var root=tetrisUiRoot.transform;
+            if(mobileMode){BuildPortraitInterface(root);return;}
             Label(root,"i T e t r i s",new Vector2(0,461),new Vector2(400,48),34,Pale);
             Label(root,"F I N D   Y O U R   F L O W",new Vector2(0,422),new Vector2(400,22),10,Muted);
             var left=Panel(root,new Vector2(-412,244),new Vector2(258,150));
@@ -143,10 +151,10 @@ namespace iTetris
             holdText=Label(held,"H O L D",new Vector2(0,65),new Vector2(220,28),18,Pale);
             Label(held,"C  /  SHIFT",new Vector2(0,-78),new Vector2(210,22),10,Muted);
             Label(root,"C L E A R\nF O C U S\nR E P E A T",new Vector2(412,-357),new Vector2(200,80),10,Muted);
-            ButtonAt(root,"II",new Vector2(716,453),new Vector2(48,48),()=>TogglePause());
-            var sound=ButtonAt(root,"",new Vector2(-716,453),new Vector2(80,36),()=>{audioWorld.Toggle();UpdateSound();});soundText=sound.GetComponentInChildren<Text>();
-            ButtonAt(root,"?",new Vector2(716,-445),new Vector2(44,36),()=>ToggleHelp());
-            Label(root,"← →  MOVE     ↑ / X  ROTATE     Z  REVERSE     ↓  SOFT DROP     SPACE  DROP",new Vector2(0,-469),new Vector2(1150,24),11,Muted);
+            ButtonAt(root,"II",new Vector2(716,453),mobileMode?new Vector2(100,72):new Vector2(48,48),()=>TogglePause());
+            var sound=ButtonAt(root,"",new Vector2(-716,453),mobileMode?new Vector2(140,64):new Vector2(80,36),()=>{audioWorld.Toggle();UpdateSound();});soundText=sound.GetComponentInChildren<Text>();
+            ButtonAt(root,"?",new Vector2(716,-445),mobileMode?new Vector2(100,64):new Vector2(44,36),()=>ToggleHelp());
+            if(!mobileMode)Label(root,"← →  MOVE     ↑ / X  ROTATE     Z  REVERSE     ↓  SOFT DROP     SPACE  DROP",new Vector2(0,-469),new Vector2(1150,24),11,Muted);
             toastText=Label(root,"",new Vector2(0,-426),new Vector2(680,28),17,Teal);
             overlay=UIObject("Menu overlay",root,new Vector2(0,-12),new Vector2(405,590));
             var image=overlay.gameObject.AddComponent<Image>();image.sprite=RoundedSprite();image.type=Image.Type.Sliced;image.color=new Color(.018f,.04f,.07f,.97f);
@@ -157,7 +165,7 @@ namespace iTetris
             secondaryButton=ButtonAt(overlay,"NEW GAME",new Vector2(0,-61),new Vector2(275,46),()=>StartGame());
             ButtonAt(overlay,"MARATHON  /  ZEN",new Vector2(0,-135),new Vector2(275,40),()=>{zen=!zen;modeText.text=zen?"ZEN · NO GRAVITY":"MARATHON";RefreshMenuMode();});
             ButtonAt(overlay,"GAME HUB",new Vector2(0,-182),new Vector2(160,30),()=>OpenHub());
-            Label(overlay,"SPACE TO PLAY  ·  ESC TO PAUSE",new Vector2(0,-224),new Vector2(370,26),10,Muted);
+            Label(overlay,mobileMode?"TAP RESUME TO CONTINUE":"SPACE TO PLAY  ·  ESC TO PAUSE",new Vector2(0,-224),new Vector2(370,26),10,Muted);
             helpPanel=Panel(root,Vector2.zero,new Vector2(750,660),new Color(.015f,.035f,.06f,.99f)).gameObject;
             Label(helpPanel.transform,"HOW TO PLAY",new Vector2(0,255),new Vector2(650,60),32,Pale);
             Label(helpPanel.transform,"Fill a horizontal row to clear it.\nKeep the stack below the top of the board.\n\n← / →     Move\n↑ / X     Rotate clockwise\nZ     Rotate counterclockwise\n↓     Soft drop   ·   SPACE     Hard drop\nC / SHIFT     Hold a piece\nESC / P     Pause   ·   M     Sound\n\nMARATHON: speed rises every 10 lines.\nZEN: place pieces at your own pace.\n\nFour lines at once, combos and T-spins earn bonuses.",new Vector2(0,-5),new Vector2(670,460),19,Pale);
@@ -184,7 +192,8 @@ namespace iTetris
         }
         Text Label(Transform parent,string value,Vector2 pos,Vector2 size,int point,Color color)
         {
-            var r=UIObject(value,parent,pos,size);var t=r.gameObject.AddComponent<Text>();t.font=font;t.text=value;t.fontSize=point;t.color=color;t.alignment=TextAnchor.MiddleCenter;t.horizontalOverflow=HorizontalWrapMode.Wrap;t.verticalOverflow=VerticalWrapMode.Truncate;t.raycastTarget=false;return t;
+            if(mobileMode)size.y=Mathf.Max(size.y,40);
+            var r=UIObject(value,parent,pos,size);var t=r.gameObject.AddComponent<Text>();t.font=font;t.text=value;t.fontSize=mobileMode?Mathf.Max(28,point):point;t.color=color;t.alignment=TextAnchor.MiddleCenter;t.horizontalOverflow=HorizontalWrapMode.Wrap;t.verticalOverflow=VerticalWrapMode.Truncate;t.raycastTarget=false;return t;
         }
         Button ButtonAt(Transform parent,string text,Vector2 pos,Vector2 size,UnityEngine.Events.UnityAction action,bool accent=false)
         {
@@ -207,7 +216,7 @@ namespace iTetris
             for(int x=0;x<10;x++)for(int y=0;y<20;y++)settled[x,y].transform.localScale=Vector3.one;
             game.Restart();overlay.gameObject.SetActive(false);helpPanel.SetActive(false);dirty=true;ResetInput();
         }
-        void ResetInput(){horizontalTimer=softTimer=0;lastDirection=0;}
+        void ResetInput(){horizontalTimer=softTimer=0;lastDirection=0;touchLeft=touchRight=touchDown=false;}
         void TogglePause()
         {
             if(!started||game.GameOver||helpPanel.activeSelf)return;
@@ -224,8 +233,7 @@ namespace iTetris
             #if !UNITY_WEBGL || UNITY_EDITOR
             if(Input.GetKeyDown(KeyCode.F12))ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(Application.persistentDataPath,"Gameplay.png"));
 #endif
-            float scale=Mathf.Min(Screen.width/1600f,Screen.height/1000f);canvas.scaleFactor=scale;
-            cameraMain.orthographicSize=Screen.height/(scale*80);
+            LayoutViewport();
             if(Input.GetKeyDown(KeyCode.M)){audioWorld.Toggle();UpdateSound();UpdateHubSound();}
             #if !UNITY_WEBGL || UNITY_EDITOR
             if(Input.GetKeyDown(KeyCode.F11))Screen.fullScreen=!Screen.fullScreen;
@@ -251,14 +259,14 @@ namespace iTetris
         }
         void HandleInput()
         {
-            int direction=Input.GetKey(KeyCode.LeftArrow)||Input.GetKey(KeyCode.A)?-1:Input.GetKey(KeyCode.RightArrow)||Input.GetKey(KeyCode.D)?1:0;
+            int direction=Input.GetKey(KeyCode.LeftArrow)||Input.GetKey(KeyCode.A)||touchLeft?-1:Input.GetKey(KeyCode.RightArrow)||Input.GetKey(KeyCode.D)||touchRight?1:0;
             if(direction!=lastDirection){horizontalTimer=.16f;if(direction!=0&&game.Move(direction))audioWorld.Play("move");lastDirection=direction;}
             else if(direction!=0){horizontalTimer-=Time.deltaTime;if(horizontalTimer<=0){horizontalTimer+=.045f;if(game.Move(direction))audioWorld.Play("move");}}
             if(Input.GetKeyDown(KeyCode.UpArrow)||Input.GetKeyDown(KeyCode.X)||Input.GetKeyDown(KeyCode.W)){if(game.Rotate(1))audioWorld.Play("rotate");}
             if(Input.GetKeyDown(KeyCode.Z)){if(game.Rotate(-1))audioWorld.Play("rotate");}
             if(Input.GetKeyDown(KeyCode.C)||Input.GetKeyDown(KeyCode.LeftShift)||Input.GetKeyDown(KeyCode.RightShift)){if(game.Hold())audioWorld.Play("hold");}
             if(Input.GetKeyDown(KeyCode.Space)){game.HardDrop();audioWorld.Play("drop");shake=.12f;return;}
-            if(Input.GetKey(KeyCode.DownArrow)||Input.GetKey(KeyCode.S))
+            if(Input.GetKey(KeyCode.DownArrow)||Input.GetKey(KeyCode.S)||touchDown)
             {softTimer-=Time.deltaTime;if(softTimer<=0){softTimer=.035f;game.SoftDrop();}}
             else softTimer=0;
         }
@@ -276,9 +284,14 @@ namespace iTetris
                 active[i].transform.position=BoardPosition(cells[i].X,cells[i].Y);crystals.SetKind(active[i],game.Active);
                 ghosts[i].transform.position=BoardPosition(ghost[i].X,ghost[i].Y);
             }
-            var next=game.Next(3);for(int i=0;i<3;i++)DrawPreview(next[i],i*4,new Vector3(10.3f,6.25f-i*3,0),.72f);
+            var next=game.Next(3);
+            if(mobileMode){DrawMobilePreviews(next);foreach(var p in previews)p.SetActive(false);}
+            else
+            {
+            for(int i=0;i<3;i++)DrawPreview(next[i],i*4,new Vector3(10.3f,6.25f-i*3,0),.72f);
             for(int i=12;i<16;i++)previews[i].SetActive(game.Held.HasValue);
             if(game.Held.HasValue)DrawPreview(game.Held.Value,12,new Vector3(10.3f,-4.65f,0),.78f);
+            }
             holdText.color=game.HoldUsed?Muted:Pale;
             scoreText.text=game.Score.ToString("D6");levelText.text=game.Level.ToString("D2");linesText.text="LINES  "+game.Lines.ToString("D3");
             if(game.Score>best){best=game.Score;PlayerPrefs.SetInt("BestScore",best);}bestText.text="BEST  "+best.ToString("D6");
@@ -356,7 +369,7 @@ namespace iTetris
             audioWorld.Play("end");PlayerPrefs.Save();
             ShowMenu("GAME OVER","SCORE  "+game.Score.ToString("N0")+"\nLINES  "+game.Lines+"   ·   LEVEL  "+game.Level,"PLAY AGAIN",false);
         }
-        void OnApplicationFocus(bool focus){if(gardenActive){if(!focus&&!gardenPaused)PauseGarden();return;}if(!focus&&started&&!paused&&!game.GameOver)TogglePause();}
+        void OnApplicationFocus(bool focus){if(Application.platform==RuntimePlatform.Android)return;if(gardenActive){if(!focus&&!gardenPaused)PauseGarden();return;}if(!focus&&started&&!paused&&!game.GameOver)TogglePause();}
         void OnApplicationQuit(){SaveGarden();if(diagnosticBest.HasValue)PlayerPrefs.SetInt("BestScore",diagnosticBest.Value);PlayerPrefs.Save();}
         #if !UNITY_WEBGL || UNITY_EDITOR
         static void Check(bool condition,string name){if(!condition)throw new Exception("SMOKE FAILED: "+name);Debug.Log("SMOKE PASS: "+name);}
@@ -390,7 +403,7 @@ namespace iTetris
             PrimaryHubAction();Check(!hubVisible&&!paused&&!overlay.gameObject.activeSelf,"card resume returns directly to Tetris");
             StartGame();zen=true;
             Check(started&&!overlay.gameObject.activeSelf,"start menu closes");
-            Check(game.Hold(),"hold input action");DrawGame();Check(previews[12].activeSelf,"held piece is rendered");
+            Check(game.Hold(),"hold input action");DrawGame();Check(mobileMode?mobilePreviewCells[12].gameObject.activeSelf:previews[12].activeSelf,"held piece is rendered");
             Check(game.Move(-1)&&game.Rotate(1),"move and rotate actions");game.HardDrop();DrawGame();
             Check(game.Score>0,"drop updates score");
             game.Restart();Array.Clear(game.Board,0,game.Board.Length);
@@ -399,7 +412,7 @@ namespace iTetris
                 typeof(TetrisGame).GetField("<"+pair.Key+">k__BackingField",flags).SetValue(game,pair.Value);
             for(int y=0;y<2;y++)for(int x=0;x<10;x++)if(x!=4&&x!=5)game.Board[x,y]=1;
             DrawGame();game.HardDrop();Check(clearing,"line clear animation starts");
-            yield return new WaitForSecondsRealtime(.4f);
+            float clearDeadline=Time.realtimeSinceStartup+3;while(clearing&&Time.realtimeSinceStartup<clearDeadline)yield return null;
             Check(!clearing&&game.Lines==2&&game.Score==2300,"line clear finishes with correct score");
             TogglePause();Check(paused&&overlay.gameObject.activeSelf,"pause menu opens");TogglePause();Check(!paused&&!overlay.gameObject.activeSelf,"resume closes menu");
             ToggleHelp();Check(helpPanel.activeSelf&&paused,"help pauses game");ToggleHelp();Check(!helpPanel.activeSelf&&!paused,"help restores play");
@@ -407,6 +420,7 @@ namespace iTetris
             for(int y=17;y<20;y++)for(int x=0;x<10;x++)game.Board[x,y]=1;game.Hold();
             yield return null;Check(game.GameOver&&overlay.gameObject.activeSelf&&overlayTitle.text=="GAME OVER","game over menu");
             StartGame();Check(!game.GameOver&&game.Score==0&&game.Held==null,"restart resets game");
+            if(mobileMode)yield return MobileSmoke();
             Debug.Log("ALL RUNTIME SMOKE TESTS PASSED");Application.Quit();
         }
         IEnumerator VisualCapture()

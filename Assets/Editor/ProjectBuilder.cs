@@ -37,7 +37,9 @@ namespace iTetris.Editor
             settings.ApplyModifiedPropertiesWithoutUndo();
             foreach(string guid in AssetDatabase.FindAssets("t:Texture2D",new[]{"Assets/Resources/Art"}))
             {
-                var importer=(TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GUIDToAssetPath(guid));importer.maxTextureSize=2048;importer.textureCompression=TextureImporterCompression.Uncompressed;importer.mipmapEnabled=false;importer.SaveAndReimport();
+                var importer=(TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GUIDToAssetPath(guid));
+                if(importer.maxTextureSize!=2048||importer.textureCompression!=TextureImporterCompression.Uncompressed||importer.mipmapEnabled)
+                {importer.maxTextureSize=2048;importer.textureCompression=TextureImporterCompression.Uncompressed;importer.mipmapEnabled=false;importer.SaveAndReimport();}
             }
             Directory.CreateDirectory("Assets/Resources/Materials");
             for(int i=0;i<7;i++)
@@ -99,6 +101,44 @@ namespace iTetris.Editor
             foreach(var file in Directory.GetFiles("Builds/Web","*",SearchOption.AllDirectories))
                 if(new FileInfo(file).Length>25L*1024*1024)throw new Exception("Cloudflare Pages asset exceeds 25 MiB: "+file);
             Debug.Log("ITETRIS_WEB_BUILD_SUCCEEDED "+report.summary.totalSize);
+        }
+        [MenuItem("iTetris/Build Android APK")]
+        public static void BuildAndroid()
+        {
+            var tools=Path.Combine(EditorApplication.applicationContentsPath,"PlaybackEngines/AndroidPlayer");
+            string jdk=Environment.GetEnvironmentVariable("ITETRIS_JDK_PATH");
+            if(string.IsNullOrEmpty(jdk))jdk=Directory.Exists("/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home")?"/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home":Path.Combine(tools,"OpenJDK");
+            UnityEditor.Android.AndroidExternalToolsSettings.jdkRootPath=jdk;
+            UnityEditor.Android.AndroidExternalToolsSettings.sdkRootPath=Path.Combine(tools,"SDK");
+            string ndk=Path.Combine(tools,"SDK/ndk/27.2.12479018");
+            UnityEditor.Android.AndroidExternalToolsSettings.ndkRootPath=Directory.Exists(ndk)?ndk:Path.Combine(tools,"NDK");
+            Prepare();
+            PlayerSettings.productName="Crystal Arcade";
+            PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android,"com.itetris.crystalarcade");
+            PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android,ScriptingImplementation.IL2CPP);
+            PlayerSettings.SetManagedStrippingLevel(NamedBuildTarget.Android,ManagedStrippingLevel.High);
+            PlayerSettings.Android.targetArchitectures=AndroidArchitecture.ARM64;
+            PlayerSettings.Android.minSdkVersion=AndroidSdkVersions.AndroidApiLevel26;
+            PlayerSettings.Android.targetSdkVersion=AndroidSdkVersions.AndroidApiLevelAuto;
+            PlayerSettings.Android.bundleVersionCode=1;PlayerSettings.Android.useCustomKeystore=false;
+            PlayerSettings.defaultInterfaceOrientation=UIOrientation.LandscapeLeft;
+            PlayerSettings.allowedAutorotateToPortrait=false;PlayerSettings.allowedAutorotateToPortraitUpsideDown=false;
+            PlayerSettings.allowedAutorotateToLandscapeLeft=true;PlayerSettings.allowedAutorotateToLandscapeRight=true;
+            PlayerSettings.defaultInterfaceOrientation=UIOrientation.AutoRotation;
+            PlayerSettings.SetGraphicsAPIs(BuildTarget.Android,new[]{GraphicsDeviceType.OpenGLES3});
+            EditorUserBuildSettings.buildAppBundle=false;EditorUserBuildSettings.androidBuildSystem=AndroidBuildSystem.Gradle;
+            foreach(string guid in AssetDatabase.FindAssets("t:Texture2D",new[]{"Assets/Resources/Art"}))
+            {
+                var importer=(TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GUIDToAssetPath(guid));
+                var android=importer.GetPlatformTextureSettings("Android");
+                if(android.overridden&&android.maxTextureSize==2048&&android.format==TextureImporterFormat.ETC2_RGBA8&&android.textureCompression==TextureImporterCompression.CompressedHQ&&android.compressionQuality==100)continue;
+                android.overridden=true;android.maxTextureSize=2048;
+                android.format=TextureImporterFormat.ETC2_RGBA8;android.textureCompression=TextureImporterCompression.CompressedHQ;android.compressionQuality=100;
+                importer.SetPlatformTextureSettings(android);importer.SaveAndReimport();
+            }
+            var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=new[]{"Assets/Scenes/iTetris.unity"},locationPathName="Builds/Android/CrystalArcade.apk",target=BuildTarget.Android,options=BuildOptions.None});
+            if(report.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new Exception("Android build failed: "+report.summary.result);
+            Debug.Log("CRYSTAL_ARCADE_ANDROID_BUILD_SUCCEEDED "+report.summary.totalSize);
         }
         public static void RunRulesTests()
         {

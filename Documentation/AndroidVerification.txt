@@ -1,0 +1,59 @@
+Android verification — 2026-10-05
+Unity 6000.0.83f1; IL2CPP; ARM64; min API 26; target API 36
+Device: Pixel 6 emulator, Android 16 / API 36
+APK bytes: 31975499
+SHA-256: c84f05600ec5419db2d37e33f242e95ac579a244f6a80060d3ae8baff3aae5fa
+APK v2 signature verified; direct installation succeeded.
+No Unity errors in final run. Physical phone testing not performed.
+
+PASS hub is the native startup screen
+PASS Brick Garden is playable in hub
+PASS garden opens independently of Tetris
+PASS garden tile selection merges neighbours
+PASS garden places preview on empty tile
+PASS garden tile collider accepts mouse ray
+PASS garden save payload round trips
+PASS garden pause menu
+PASS garden resumes
+PASS garden returns to hub
+PASS garden state survives hub navigation
+PASS garden ends when full without matching neighbours
+PASS new garden restarts after completion
+PASS library scrolls to last game
+PASS upcoming card 2 stays unavailable
+PASS upcoming card 3 stays unavailable
+PASS upcoming card 4 stays unavailable
+PASS upcoming card 5 stays unavailable
+PASS Tetris opens from hub
+PASS return to hub freezes current game
+PASS card resume returns directly to Tetris
+PASS start menu closes
+PASS hold input action
+PASS held piece is rendered
+PASS move and rotate actions
+PASS drop updates score
+PASS line clear animation starts
+PASS line clear finishes with correct score
+PASS pause menu opens
+PASS resume closes menu
+PASS help pauses game
+PASS help restores play
+PASS sound toggle
+PASS game over menu
+PASS restart resets game
+PASS Android Tetris uses portrait orientation
+PASS portrait touch controls are visible
+PASS all seven touch controls exist
+PASS touch press moves piece left
+PASS releasing touch stops horizontal repeat
+PASS touch hold swaps piece
+PASS touch rotate turns piece clockwise
+PASS touch soft drop lowers piece
+PASS touch hard drop locks and scores
+PASS touch control accepts UI raycast
+PASS portrait board fits within safe area
+PASS backgrounding pauses Tetris
+PASS hub returns to landscape orientation
+PASS garden screen touch selects calibrated pedestal
+PASS backgrounding pauses garden
+ALL 50 ANDROID RUNTIME CHECKS PASSED

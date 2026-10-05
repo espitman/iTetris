@@ -12,3 +12,4 @@ Tools/obj/
 *.blend1
 !Tools/RulesTests.csproj
 Documentation/*.log
+.utmp/
