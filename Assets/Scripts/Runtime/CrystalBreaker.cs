@@ -20,7 +20,13 @@ namespace iTetris
         readonly List<BreakerFragment> breakerFragments = new List<BreakerFragment>();
         readonly Color[] breakerShardColors = {new Color(.12f,.9f,1),new Color(.16f,.36f,1),new Color(.63f,.24f,1),new Color(1,.76f,.27f)};
         Text breakerStageAnnouncement;
-        Image breakerSeal;
+        Image breakerSeal, breakerRoman;
+        readonly Sprite[] breakerChapterSprites=new Sprite[6];
+        readonly List<GameObject> breakerFormingBricks=new List<GameObject>();
+        ParticleSystem breakerChapterDust,breakerChapterShards;
+        readonly ParticleSystem.Particle[] breakerDustParticles=new ParticleSystem.Particle[900];
+        readonly ParticleSystem.Particle[] breakerShardParticles=new ParticleSystem.Particle[160];
+        int breakerPreviewStage=-1;
         readonly Sprite[] breakerHudSprites=new Sprite[9];
         readonly List<GameObject> breakerStageMotes=new List<GameObject>();
         readonly Sprite[] breakerSprites = new Sprite[8];
@@ -66,6 +72,9 @@ namespace iTetris
             var hud=Resources.Load<Texture2D>("Art/BreakerHud");
             Rect[] hudRects={new Rect(15,1007,400,74),new Rect(433,1001,387,85),new Rect(951,932,187,229),new Rect(138,489,139,298),new Rect(510,507,232,242),new Rect(889,496,308,263),new Rect(71,66,277,289),new Rect(429,62,394,307),new Rect(972,116,142,196)};
             for(int i=0;i<9;i++)breakerHudSprites[i]=Sprite.Create(hud,hudRects[i],new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
+            var chapter=Resources.Load<Texture2D>("Art/BreakerChapter");
+            Rect[] chapterRects={new Rect(197,584,126,310),new Rect(643,583,252,312),new Rect(1077,583,401,313),new Rect(79,105,353,313),new Rect(628,107,280,310),new Rect(1036,132,486,239)};
+            for(int i=0;i<6;i++)breakerChapterSprites[i]=Sprite.Create(chapter,chapterRects[i],new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
             var armor = Resources.Load<Texture2D>("Art/BreakerDurability");
             float cellWidth = armor.width / 4f, cellHeight = armor.height / 2f;
             // Calibrated to the core of each generated sprite, excluding the broken corner debris.
@@ -127,22 +136,24 @@ namespace iTetris
             breakerStats=BreakerLabel(root,"000000",new Vector2(-527,470),new Vector2(190,42),30);
             HudImage(root,2,new Vector2(483,464),new Vector2(55,67));
             breakerLevel=BreakerLabel(root,"1",new Vector2(483,464),new Vector2(45,40),26);
-            for(int i=0;i<3;i++)breakerLives[i]=HudImage(root,3,new Vector2(557+i*44,464),new Vector2(25,53));
+            for(int i=0;i<3;i++)
+            {
+                breakerLives[i]=HudImage(root,3,new Vector2(557+i*35,464),new Vector2(40,61));
+                breakerLives[i].sprite=breakerSprites[5];
+            }
             breakerPause=ButtonAt(root,"",new Vector2(715,464),new Vector2(55,58),ToggleBreakerPause);
             breakerPause.GetComponent<Image>().sprite=breakerHudSprites[4];
             breakerPause.GetComponent<Image>().color=Color.white;
             breakerPause.GetComponent<Image>().type=Image.Type.Simple;
             breakerMessage=BreakerLabel(root,"",new Vector2(0,-444),new Vector2(1100,38),18);
-            breakerSeal=HudImage(root,7,new Vector2(0,100),new Vector2(350,270));
-            breakerStageAnnouncement=BreakerLabel(root,"",new Vector2(0,100),new Vector2(280,180),85);
-            for(int i=0;i<27;i++)
-            {
-                var mote=BreakerSprite("Stage forming crystal",6,Vector3.zero,.25f,18);
-                mote.GetComponent<SpriteRenderer>().sprite=breakerHudSprites[8];
-                var trail=mote.AddComponent<TrailRenderer>();trail.sharedMaterial=Resources.Load<Material>("Materials/BreakerTrail");
-                trail.time=.22f;trail.startWidth=.045f;trail.endWidth=0;trail.startColor=new Color(.3f,.85f,1,.7f);trail.endColor=new Color(.3f,.85f,1,0);
-                breakerStageMotes.Add(mote);
-            }
+            breakerSeal=HudImage(root,7,new Vector2(0,100),new Vector2(350,175));
+            breakerSeal.sprite=breakerChapterSprites[5];
+            breakerRoman=HudImage(root,7,new Vector2(0,100),new Vector2(155,180));
+            breakerRoman.sprite=breakerChapterSprites[1];
+            breakerRoman.preserveAspect=true;
+            breakerChapterDust=BuildChapterParticles("Light gathering",breakerSprites[5]);
+            breakerChapterShards=BuildChapterParticles("Crystal gathering",breakerSprites[6]);
+            breakerStageAnnouncement=BreakerLabel(root,"",new Vector2(0,-3),new Vector2(280,40),15);
             breakerCombo=BreakerLabel(root,"",Vector2.zero,new Vector2(280,45),25);
             breakerMenu=Panel(root,Vector2.zero,new Vector2(650,430),new Color(.008f,.035f,.055f,.93f)).gameObject;
             breakerMenuTitle=BreakerLabel(breakerMenu.transform,"PAUSED",new Vector2(0,156),new Vector2(550,60),38);
@@ -254,8 +265,6 @@ namespace iTetris
                 if(i<breaker.Balls.Count){ball.transform.localPosition=BreakerPosition(breaker.Balls[i].X,breaker.Balls[i].Y);ball.GetComponent<TrailRenderer>().emitting=!breaker.Waiting&&!breakerPaused;if(breaker.Waiting)ball.GetComponent<TrailRenderer>().Clear();}
             }
             if(breaker.Transitioning)ClearBreakerTrails();
-            float reveal=breaker.Waiting&&!breaker.Transitioning?Mathf.Clamp01((Time.time-breakerRevealTime)/.65f):1;
-            foreach(var obj in breakerObjects){var c=obj.GetComponent<SpriteRenderer>().color;c.a=reveal;obj.GetComponent<SpriteRenderer>().color=c;}
             DrawBreakerTransition();
             DrawBreakerGifts();breakerStats.text=breaker.Score.ToString("D6");breakerLevel.text=breaker.Stage.ToString();
             for(int i=0;i<3;i++)breakerLives[i].color=i<breaker.Lives?Color.white:new Color(.25f,.45f,.55f,.25f);
@@ -304,7 +313,11 @@ namespace iTetris
             float alpha=Mathf.Clamp01(Mathf.Min(t*5,(1-t)*6));
             breakerSeal.color=new Color(1,1,1,alpha);
             string[] roman={"I","II","III","IV","V"};
-            breakerStageAnnouncement.text=roman[Mathf.Min(breaker.Stage,4)]+"\n<size=15>N E X T   C H A P T E R</size>";
+            breakerStageAnnouncement.text="N E X T   C H A P T E R";
+            breakerRoman.gameObject.SetActive(show);breakerRoman.sprite=breakerChapterSprites[Mathf.Min(breaker.Stage,4)];
+            breakerRoman.rectTransform.sizeDelta=new Vector2(95+breakerRoman.sprite.rect.width*.3f,180);
+            breakerRoman.color=new Color(1,1,1,alpha);
+            DrawChapterAssembly(show,t,alpha);
             breakerStageAnnouncement.color=new Color(.7f,.95f,1,alpha);
             for(int i=0;i<breakerStageMotes.Count;i++)
             {
@@ -343,6 +356,8 @@ namespace iTetris
             check(breakerGiftViews[0].GetComponent<Image>().sprite==breakerHudSprites[5]&&breakerGiftViews[1].GetComponent<Image>().sprite==breakerHudSprites[6]&&breakerGiftViews[0].GetComponentInChildren<Text>()==null&&!breakerGiftViews[0].GetComponent<Image>().raycastTarget,"falling rewards use distinct crystal pictograms without boxes or labels");
             breaker.Launch();breaker.Bricks.Clear();breaker.Tick(.01f);DrawBreaker();
             check(breaker.Transitioning&&breakerStageAnnouncement.gameObject.activeSelf&&breaker.Stage==1,"stage clear displays announcement before changing level");
+            check(breakerLives[0].sprite==breakerSprites[5],"lives use luminous pearl orbs");
+            check(breakerFormingBricks.Count==27&&breakerRoman.sprite==breakerChapterSprites[1]&&breakerChapterDust.particleCount==900,"chapter transition assembles next bricks with faceted numeral and light particles");
             NewBreaker();
         }
         #if !UNITY_WEBGL || UNITY_EDITOR
@@ -372,7 +387,7 @@ namespace iTetris
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"--breaker-transition-capture")>=0)
             {
                 breaker.Bricks.Clear();breaker.Tick(.01f);
-                for(int i=0;i<60;i++){breaker.TransitionRemaining=Mathf.Max(.1f,breaker.TransitionRemaining-Time.deltaTime);DrawBreaker();yield return null;}
+                for(int i=0;i<60;i++){breaker.TransitionRemaining=CrystalBreakerRules.StageTransitionDuration*(1-i/110f);DrawBreaker();yield return null;}
             }
             breakerPaused=false;DrawBreaker();
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"--capture-path");

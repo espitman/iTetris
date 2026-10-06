@@ -27,6 +27,8 @@ SMOKE PASS: original shard design retains brick color 2
 SMOKE PASS: original shard design retains brick color 3
 SMOKE PASS: falling rewards use distinct crystal pictograms without boxes or labels
 SMOKE PASS: stage clear displays announcement before changing level
+SMOKE PASS: lives use luminous pearl orbs
+SMOKE PASS: chapter transition assembles next bricks with faceted numeral and light particles
 SMOKE PASS: breaker pause reveals navigation menu
 SMOKE PASS: breaker resume clears playfield menu
 SMOKE PASS: breaker powerups are rendered

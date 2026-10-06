@@ -27,7 +27,7 @@
 
 ## اعتبارسنجی
 
-۴۵ بررسی قوانین با `dotnet run --project Tools/RulesTests.csproj`؛ نتایج در `Documentation/RulesTests.txt`. ۵۴ بررسی اجرایی مک با `--smoke-test` شامل هاب، سه بازی، نمایش هدر، آجرهای مستقل، توقف و ادامه و قدرت‌ها و تغییر ظاهر پس از برخورد اول و شکستن پس از برخورد دوم است؛ نتایج در `Documentation/MacRuntimeTests.txt`. خروجی مک Universal برای arm64 و x86_64 است. خروجی وب و Android در این تغییر ساخته یا منتشر نشده‌اند.
+۴۵ بررسی قوانین با `dotnet run --project Tools/RulesTests.csproj`؛ نتایج در `Documentation/RulesTests.txt`. ۵۶ بررسی اجرایی مک با `--smoke-test` شامل هاب، سه بازی، نمایش هدر، آجرهای مستقل، توقف و ادامه و قدرت‌ها و تغییر ظاهر پس از برخورد اول و شکستن پس از برخورد دوم است؛ نتایج در `Documentation/MacRuntimeTests.txt`. خروجی مک Universal برای arm64 و x86_64 است. خروجی وب و Android در این تغییر ساخته یا منتشر نشده‌اند.
 
 ## دوام آجرها
 
@@ -47,8 +47,14 @@
 
 ## هدر و نمادهای تأییدشده
 
-اطلس RGBA `Assets/Resources/Art/BreakerHud.png`، اندازهٔ واقعی ۱۲۵۴×۱۲۵۴، ۹ دارایی: لوگوی کریستالی، قاب خالی امتیاز، مدال خالی مرحله، کریستال جان، نماد توقف، دو جایزه، حلقهٔ تشکیل مرحله و درخشش. اعداد امتیاز و مرحله و تعداد جان‌ها از قوانین واقعی خوانده می‌شوند. برش‌ها با آلفای واقعی کالیبره شدند. توقف همچنان دکمهٔ قابل کلیک است.
+اطلس RGBA `Assets/Resources/Art/BreakerHud.png`، اندازهٔ واقعی ۱۲۵۴×۱۲۵۴، ۹ دارایی: لوگوی کریستالی، قاب خالی امتیاز، مدال خالی مرحله، گوی جان، نماد توقف، دو جایزه، حلقهٔ تشکیل مرحله و درخشش. اعداد امتیاز و مرحله و تعداد جان‌ها از قوانین واقعی خوانده می‌شوند. برش‌ها با آلفای واقعی کالیبره شدند. توقف همچنان دکمهٔ قابل کلیک است.
 
 مرجع تأییدشده `exec-17390463-2135-4d7c-ac6d-1659982110e9.png`؛ تولید edit با ابزار image_gen. خروجی اصلی `exec-5d42667b-acab-49ee-875d-b2c1a8653e79.png` در generated_images حفظ شده و به مسیر اطلس بالا کپی شد. پرامپت: Extract/reproduce the approved delicate crystalline game HUD and powerups as a production RGBA sprite atlas, transparent background, 3×3 centered isolated sprites, no dashboard boxes, thin faceted crystal lettering and rims; empty score/stage interiors for live counters; gold paddle with outward arrows, violet diamond with three luminous pearls; empty constellation seal; sharp life gem and diamond pause token.
 
 تصاویر خروجی واقعی: `CrystalBreakerEffects.png` و `CrystalBreakerTransition.png`.
+
+## بازسازی افکت مرحله از مرجع
+
+دارایی جدید `Assets/Resources/Art/BreakerChapter.png` از تصویر تأییدشدهٔ تغییر مرحله با image_gen در حالت edit تولید شد: اطلس RGBA ۱۵۳۶×۱۰۲۴ شامل اعداد رومی I تا V با شکست نور واقعی و تزئینات نازک دور آن‌ها. پرامپت نهایی: Extract exact central ice-glass Roman numerals and thin constellation ornaments from the approved level transition reference into a true transparent RGBA 3×2 atlas; preserve classical serif silhouettes, translucent triangular crystal facets, white bevel, cyan inner glass, and thin curved constellation arcs; no environment, bricks, scoreboard or labels. خروجی اصلی `exec-41a42dd9-35eb-4c4b-a2d4-1741130ba510.png` حفظ شد و به مسیر پروژه کپی شد.
+
+افکت واقعی در `BreakerChapter.cs`: ۹۰۰ ذرهٔ نور، ۱۶۰ خرده‌کریستال، دو موج منحنی و شکل‌گیری تدریجی ۲۷ آجر مرحلهٔ بعد با رنگ و دوام همان مرحله. بعد از پایان بازه، تصویر آجرها به اشیای برخوردپذیر منتقل می‌شود. گوی‌های نورانی جان از دارایی اصلی توپ استفاده می‌کنند. تصویر واقعی مک در `CrystalBreakerTransition.png` است.

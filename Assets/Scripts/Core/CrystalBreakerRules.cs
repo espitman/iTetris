@@ -22,7 +22,7 @@ namespace iTetris.Core
         public event Action<float, float, int> Broken;
         int destroyed;
 
-        public CrystalBreakerRules() { LoadStage(); }
+        public CrystalBreakerRules(int stage = 1) { Stage = Math.Clamp(stage,1,5); LoadStage(); }
         public void SetPaddle(float x)
         {
             Paddle = Math.Clamp(x, -Wall + HalfWidth, Wall - HalfWidth);
