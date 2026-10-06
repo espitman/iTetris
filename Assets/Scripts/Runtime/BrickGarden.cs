@@ -23,6 +23,7 @@ namespace iTetris
         readonly Sprite[] gardenSprites=new Sprite[8];
         readonly GameObject[] gardenSelections=new GameObject[16];
         Transform gardenNextPanel;
+        bool GardenCrystalHeader => BreakerAvailable&&!mobileMode;
         const string GardenSaveKey="BrickGarden.Save.v1";
         [Serializable] sealed class GardenSave {public int[] cells;public int score,moves,next;}
         // Pixel coordinates measured on GardenPlate (1586 × 992), in board index order.
@@ -90,18 +91,51 @@ namespace iTetris
             }
             gardenUi=UIObject("Brick Garden interface",canvas.transform,Vector2.zero,new Vector2(1600,1000)).gameObject;
             var root=gardenUi.transform;
+            if(GardenCrystalHeader)
+            {
+                var art=Resources.Load<Texture2D>("Art/BreakerGardenHud");
+                var shared=Resources.Load<Texture2D>("Art/BreakerHud");
+                GardenHudImage(root,art,new Rect(30,370,1000,190),Vector2.zero+new Vector2(0,462),new Vector2(420,80));
+                GardenHudImage(root,shared,new Rect(433,1001,387,85),new Vector2(-527,462),new Vector2(240,53));
+                gardenScore=Label(root,"0",new Vector2(-527,463),new Vector2(190,42),30,Pale);
+                GardenHeaderLine(root,-774,-729);
+                GardenHeaderLine(root,-371,-216);GardenHeaderLine(root,216,438);
+                GardenHeaderLine(root,633,683);GardenHeaderLine(root,744,774);
+                Label(root,"◇",new Vector2(-387,462),new Vector2(22,24),19,Teal);
+                Label(root,"◇",new Vector2(450,462),new Vector2(22,24),19,Teal);
+                var shard=Resources.Load<Texture2D>("Art/BreakerHud");
+                GardenHudImage(root,shard,new Rect(972,116,142,196),new Vector2(-688,462),new Vector2(18,29));
+                GardenHudImage(root,shard,new Rect(972,116,142,196),new Vector2(-714,452),new Vector2(12,20));
+                GardenHudImage(root,shard,new Rect(972,116,142,196),new Vector2(-704,479),new Vector2(12,22));
+            }
+            else
+            {
             Label(root,"B R I C K   G A R D E N",new Vector2(0,450),new Vector2(950,60),30,Pale);
             Label(root,"◇",new Vector2(0,408),new Vector2(100,26),18,Teal);
             var left=Panel(root,new Vector2(-654,418),new Vector2(230,108),new Color(.02f,.06f,.1f,.5f));
             Label(left,"S C O R E",new Vector2(0,30),new Vector2(210,22),12,Muted);
             gardenScore=Label(left,"0",new Vector2(0,-14),new Vector2(210,50),32,Pale);
+            }
             gardenBestText=Label(root,"",mobileMode?new Vector2(-654,334):new Vector2(-627,-411),new Vector2(280,40),12,Muted);
             gardenMoves=Label(root,"",mobileMode?new Vector2(-654,295):new Vector2(-627,-442),new Vector2(280,40),12,Muted);
+            if(GardenCrystalHeader)
+            {
+                gardenNextPanel=UIObject("Next crystal cradle",root,new Vector2(540,450),new Vector2(140,98));
+                GardenHudImage(gardenNextPanel,Resources.Load<Texture2D>("Art/BreakerGardenHud"),new Rect(1020,230,720,480),Vector2.zero,new Vector2(140,93));
+                Label(gardenNextPanel,"N E X T",new Vector2(0,-46),new Vector2(110,22),10,Pale);
+                gardenNext=Label(gardenNextPanel,"",new Vector2(0,-29),new Vector2(110,20),10,Pale);
+                var pause=ButtonAt(root,"",new Vector2(715,462),new Vector2(55,58),()=>PauseGarden());
+                var image=pause.GetComponent<Image>();image.sprite=Sprite.Create(Resources.Load<Texture2D>("Art/BreakerHud"),new Rect(510,507,232,242),new Vector2(.5f,.5f),100);
+                image.type=Image.Type.Simple;image.color=Color.white;
+            }
+            else
+            {
             var right=Panel(root,new Vector2(674,386),new Vector2(140,185),new Color(.02f,.06f,.1f,.5f));gardenNextPanel=right;
             Label(right,"N E X T",new Vector2(0,67),new Vector2(130,24),12,Pale);
             gardenNext=Label(right,"",new Vector2(0,-74),new Vector2(130,24),10,Muted);
+            }
             ButtonAt(root,"GAME HUB",mobileMode?new Vector2(-660,-460):new Vector2(-676,-478),mobileMode?new Vector2(200,64):new Vector2(140,32),()=>OpenHub());
-            ButtonAt(root,"PAUSE",mobileMode?new Vector2(700,-460):new Vector2(691,-475),mobileMode?new Vector2(140,64):new Vector2(90,34),()=>PauseGarden());
+            if(!GardenCrystalHeader)ButtonAt(root,"PAUSE",mobileMode?new Vector2(700,-460):new Vector2(691,-475),mobileMode?new Vector2(140,64):new Vector2(90,34),()=>PauseGarden());
             ButtonAt(root,"HELP",mobileMode?new Vector2(535,-460):new Vector2(580,-475),mobileMode?new Vector2(140,64):new Vector2(90,34),()=>{gardenPaused=true;gardenHelp.SetActive(true);});
             ButtonAt(root,"NEW GARDEN",mobileMode?new Vector2(340,-460):new Vector2(429,-475),mobileMode?new Vector2(200,64):new Vector2(160,34),()=>ShowGardenMenu("A FRESH START?","Your current garden will be replaced.",true));
             gardenStatus=Label(root,"Select two matching neighbours. Plant on empty tiles.",mobileMode?new Vector2(0,-394):new Vector2(0,-416),mobileMode?new Vector2(1000,64):new Vector2(780,36),14,Teal);
@@ -147,9 +181,9 @@ namespace iTetris
                 if(garden.Board[i]>0)gardenPieces[i]=GardenCluster(garden.Board[i],GardenPosition(i)+new Vector3(0,0,-.7f),gardenWorld.transform);
             }
             if(gardenPreview!=null)Destroy(gardenPreview);
-            gardenPreview=UIObject("Next crystal",gardenNextPanel,new Vector2(0,-5),new Vector2(104,116)).gameObject;
+            gardenPreview=UIObject("Next crystal",gardenNextPanel,GardenCrystalHeader?new Vector2(0,4):new Vector2(0,-5),GardenCrystalHeader?new Vector2(80,88):new Vector2(104,116)).gameObject;
             var preview=gardenPreview.AddComponent<Image>();preview.sprite=gardenSprites[garden.Next-1];preview.preserveAspect=true;preview.raycastTarget=false;
-            gardenNext.text="LEVEL "+garden.Next;gardenScore.text=garden.Score.ToString("N0");gardenMoves.text="MOVES  "+garden.Moves;
+            gardenNext.text=GardenCrystalHeader?garden.Next.ToString():"LEVEL "+garden.Next;gardenScore.text=garden.Score.ToString(GardenCrystalHeader?"D6":"N0");gardenMoves.text="MOVES  "+garden.Moves;
             gardenBest=Mathf.Max(gardenBest,garden.Score);gardenBestText.text="BEST  "+gardenBest.ToString("N0");
             UpdateGardenSelection();
             if(!garden.HasMoves)ShowGardenMenu("GARDEN COMPLETE","No space left and no matching neighbours.\nScore  "+garden.Score.ToString("N0"),false);
@@ -217,6 +251,16 @@ namespace iTetris
         }
         void ShowGardenMenu(string title,string subtitle,bool resume)
         {gardenPaused=true;gardenMenu.SetActive(true);gardenMenuTitle.text=title;gardenMenuSubtitle.text=subtitle;gardenResume.gameObject.SetActive(resume);}
+        void GardenHeaderLine(Transform parent,float from,float to)
+        {
+            var image=UIObject("Crystal connecting light",parent,new Vector2((from+to)*.5f,462),new Vector2(to-from,.8f)).gameObject.AddComponent<Image>();
+            image.color=new Color(.5f,.88f,1,.7f);image.raycastTarget=false;
+        }
+        Image GardenHudImage(Transform parent,Texture2D atlas,Rect rect,Vector2 pos,Vector2 size)
+        {
+            var image=UIObject("Garden crystal header",parent,pos,size).gameObject.AddComponent<Image>();
+            image.sprite=Sprite.Create(atlas,rect,new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);image.raycastTarget=false;return image;
+        }
         void PauseGarden(){if(!gardenMenu.activeSelf)ShowGardenMenu("PAUSED","Take a breath. Your garden can wait.",garden.HasMoves);}
         void ResumeGarden(){if(!garden.HasMoves)return;gardenMenu.SetActive(false);gardenPaused=false;}
         void RestartGarden()
