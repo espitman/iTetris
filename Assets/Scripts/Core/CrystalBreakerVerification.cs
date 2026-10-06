@@ -10,7 +10,10 @@ namespace iTetris.Core
    g.SetPaddle(0);var b=g.Balls[0];b.X=1;b.Y=CrystalBreakerRules.PaddleY+.65f;b.VX=0;b.VY=-15;g.Tick(.02f);Check(b.VY>0&&b.VX>0,"paddle steers upward with minimum vertical speed");
    g.Power(true);Check(g.HalfWidth==4.3f,"wide power enlarges paddle");g.Power(false);Check(g.Balls.Count==2,"multiball creates extra ball");foreach(var ball in g.Balls){ball.Y=-11;}g.Tick(.01f);Check(g.Lives==2&&g.Waiting&&g.Balls.Count==1,"loss consumes one life and serves");
    g.Launch();g.Bricks.Clear();g.Bricks.Add(new CrystalBreakerRules.Brick{X=0,Y=0,HP=2,MaxHP=2});b=g.Balls[0];b.X=0;b.Y=-.7f;b.VX=0;b.VY=30;g.Tick(.01f);Check(g.Bricks[0].HP==1&&g.Bricks[0].MaxHP==2&&b.VY<0&&g.Score==0,"fast ball hits armored brick without tunneling");
-   b.Y=-.7f;b.VY=30;g.Tick(.01f);Check(g.Stage==2&&g.Score==100&&g.Waiting,"last brick scores and advances stage");
+   b.Y=-.7f;b.VY=30;g.Tick(.01f);Check(g.Stage==1&&g.Score==100&&g.Waiting&&g.Transitioning&&g.Balls.Count==0,"last brick starts a quiet stage-clear interval");
+   g.Launch();Check(g.Waiting&&g.Transitioning,"launch cannot interrupt stage transition");
+   for(int wait=0;wait<25;wait++)g.Tick(.1f);
+   Check(g.Stage==2&&g.Waiting&&!g.Transitioning&&g.Bricks.Count==27,"next stage waits for player launch after transition");
    g.Stage=5;g.Bricks.Clear();g.Launch();g.Tick(.01f);Check(g.Over&&g.Won,"final stage victory");
    g=new CrystalBreakerRules();g.Launch();g.Gifts.Add(new CrystalBreakerRules.Gift{X=0,Y=CrystalBreakerRules.PaddleY+.36f,Wide=true});g.Tick(.02f);Check(g.Gifts.Count==0&&g.WideTime>14,"falling power is caught by paddle");g.WideTime=.001f;g.Tick(.01f);Check(g.HalfWidth==3.3f,"wide power expires");
    g=new CrystalBreakerRules();for(int i=0;i<3;i++){g.Launch();g.Balls[0].Y=-11;g.Tick(.01f);}Check(g.Over&&!g.Won&&g.Lives==0,"three losses end game");

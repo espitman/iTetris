@@ -64,10 +64,10 @@ namespace iTetris
             using(var intent=activity.Call<AndroidJavaObject>("getIntent"))
                 if(intent.Call<string>("getStringExtra","crystalTest")=="smoke")launchArgs=new[]{"--smoke-test"};
             #endif
-            if((Array.IndexOf(launchArgs,"--breaker-capture")>=0||Array.IndexOf(launchArgs,"--breaker-durability-capture")>=0)){Application.runInBackground=true;StartCoroutine(BreakerCapture());}
+            if((Array.IndexOf(launchArgs,"--breaker-capture")>=0||Array.IndexOf(launchArgs,"--breaker-durability-capture")>=0||Array.IndexOf(launchArgs,"--breaker-effects-capture")>=0)){Application.runInBackground=true;StartCoroutine(BreakerCapture());}
             gardenNoSave=Array.IndexOf(launchArgs,"--smoke-test")>=0||Array.IndexOf(launchArgs,"--garden-capture")>=0;
             if(Array.IndexOf(launchArgs,"--garden-capture")>=0){Application.runInBackground=true;StartCoroutine(GardenCapture());}
-            if(Array.IndexOf(launchArgs,"--visual-test")>=0||Array.IndexOf(launchArgs,"--smoke-test")>=0||(Array.IndexOf(launchArgs,"--breaker-capture")>=0||Array.IndexOf(launchArgs,"--breaker-durability-capture")>=0))diagnosticBest=best;
+            if(Array.IndexOf(launchArgs,"--visual-test")>=0||Array.IndexOf(launchArgs,"--smoke-test")>=0||(Array.IndexOf(launchArgs,"--breaker-capture")>=0||Array.IndexOf(launchArgs,"--breaker-durability-capture")>=0||Array.IndexOf(launchArgs,"--breaker-effects-capture")>=0))diagnosticBest=best;
             if(Array.IndexOf(launchArgs,"--hub-capture")>=0){Application.runInBackground=true;StartCoroutine(HubCapture());}
             if(Array.IndexOf(launchArgs,"--visual-test")>=0){OpenTetris();Application.runInBackground=true;StartCoroutine(VisualCapture());}
             if(Array.IndexOf(launchArgs,"--smoke-test")>=0){Application.runInBackground=true;StartCoroutine(SmokeTest());}

@@ -15,7 +15,9 @@ namespace iTetris.Core
         public readonly List<Gift> Gifts = new List<Gift>();
         public int Score, Stage = 1, Lives = 3, Combo;
         public bool Waiting = true, Over, Won;
-        public float Paddle, WideTime;
+        public float Paddle, WideTime, TransitionRemaining;
+        public const float StageTransitionDuration = 2.4f;
+        public bool Transitioning => TransitionRemaining > 0;
         public float HalfWidth => WideTime > 0 ? 4.3f : 3.3f;
         public event Action<float, float, int> Broken;
         int destroyed;
@@ -28,7 +30,7 @@ namespace iTetris.Core
         }
         public void Launch()
         {
-            if (!Waiting || Over) return;
+            if (!Waiting || Over || Transitioning) return;
             Waiting = false; Balls[0].VX = 3; Balls[0].VY = 7 + Stage;
         }
         void LoadStage()
@@ -62,8 +64,15 @@ namespace iTetris.Core
         }
         public void Tick(float dt)
         {
-            if (Over || Waiting) return;
+            if (Over) return;
             dt = Math.Clamp(dt, 0, .1f);
+            if (Transitioning)
+            {
+                TransitionRemaining = Math.Max(0, TransitionRemaining - dt);
+                if (!Transitioning) { Stage++; LoadStage(); }
+                return;
+            }
+            if (Waiting) return;
             int steps = (int)Math.Ceiling(dt / .003f);
             float s = dt / Math.Max(1, steps);
             for (int n = 0; n < steps; n++) Step(s);
@@ -111,7 +120,7 @@ namespace iTetris.Core
             if (Bricks.Count == 0)
             {
                 if (Stage == 5) { Over = true; Won = true; }
-                else { Stage++; LoadStage(); }
+                else { TransitionRemaining = StageTransitionDuration; Waiting = true; Balls.Clear(); Gifts.Clear(); }
                 return;
             }
             if (Balls.Count == 0) { Lives--; Gifts.Clear(); if (Lives == 0) Over = true; else Serve(); }

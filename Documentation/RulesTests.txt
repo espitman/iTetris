@@ -38,7 +38,9 @@ PASS: wide power enlarges paddle
 PASS: multiball creates extra ball
 PASS: loss consumes one life and serves
 PASS: fast ball hits armored brick without tunneling
-PASS: last brick scores and advances stage
+PASS: last brick starts a quiet stage-clear interval
+PASS: launch cannot interrupt stage transition
+PASS: next stage waits for player launch after transition
 PASS: final stage victory
 PASS: falling power is caught by paddle
 PASS: wide power expires

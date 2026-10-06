@@ -27,7 +27,7 @@
 
 ## اعتبارسنجی
 
-۴۳ بررسی قوانین با `dotnet run --project Tools/RulesTests.csproj`؛ نتایج در `Documentation/RulesTests.txt`. ۴۸ بررسی اجرایی مک با `--smoke-test` شامل هاب، سه بازی، نمایش هدر، آجرهای مستقل، توقف و ادامه و قدرت‌ها و تغییر ظاهر پس از برخورد اول و شکستن پس از برخورد دوم است؛ نتایج در `Documentation/MacRuntimeTests.txt`. خروجی مک Universal برای arm64 و x86_64 است. خروجی وب و Android در این تغییر ساخته یا منتشر نشده‌اند.
+۴۵ بررسی قوانین با `dotnet run --project Tools/RulesTests.csproj`؛ نتایج در `Documentation/RulesTests.txt`. ۵۴ بررسی اجرایی مک با `--smoke-test` شامل هاب، سه بازی، نمایش هدر، آجرهای مستقل، توقف و ادامه و قدرت‌ها و تغییر ظاهر پس از برخورد اول و شکستن پس از برخورد دوم است؛ نتایج در `Documentation/MacRuntimeTests.txt`. خروجی مک Universal برای arm64 و x86_64 است. خروجی وب و Android در این تغییر ساخته یا منتشر نشده‌اند.
 
 ## دوام آجرها
 
@@ -38,3 +38,9 @@
 تولید با `image_gen` در حالت edit، با طرح سه‌حالتهٔ تأییدشده به‌عنوان مرجع: `exec-a5700488-7519-4e01-b487-9b68476cb1da.png`. خروجی اصلی `exec-e573425d-0c84-40ef-ba39-f17cf86c11aa.png` در پوشهٔ generated_images نگه داشته شده است. پرامپت نهایی:
 
 > Production game sprite atlas, edit/reference input is the approved Crystal Breaker durability design. Extract the CENTER armored pristine brick and RIGHT damaged armored brick into game-ready sprites. True transparent RGBA background, NO text, no labels, no backdrop, no cards. Strict 4 columns x 2 rows grid on a 2048x1024 canvas. Each cell exactly 512x512. Top row: intact ARMORED bricks colored cyan, sapphire blue, violet, champagne gold. Bottom row: corresponding DAMAGED armored bricks after one hit, same four colors. Every brick perfectly centered in its own cell, identical frontal orthographic angle, identical 400px-wide by 185px-high outer bounds including reinforced corner caps. Generous completely transparent padding. Keep approved realistic translucent crystal facets, WHITE luminous DOUBLE layered rim and four chunky diamond reinforcement corners for intact bricks. Damaged bricks keep the same connected rectangular main core but have clearly shattered outer frame, broken two corner caps, dark central impact star and branching luminous cracks, one remaining hit. Keep debris contained inside each cell close to the broken rim, no explosion. Preserve hue in each column between both states. Damage must be unmistakable in a small sprite. No cartoon or vector or opaque background.
+
+## خرده‌شیشه، جایزه و تعویض مرحله
+
+خرده‌شیشه‌ها از ناحیهٔ کریستالی اطلس همان رنگ آجر ساخته می‌شوند؛ چهار رنگ تصویر مستقل دارند. جایزه‌ها روی رابط با زمینهٔ تیره، اندازهٔ بزرگ‌تر، نوشتهٔ WIDE یا MULTI و رنگ متفاوت نمایش داده می‌شوند و ورودی ماوس را مسدود نمی‌کنند.
+
+شکستن آخرین آجر، بازهٔ ۲٫۴ ثانیه‌ای پایان مرحله را آغاز می‌کند: توپ‌ها و جایزه‌ها جمع می‌شوند، انیمیشن شکستن ادامه دارد، پیام LEVEL CLEARED / GET READY نمایش داده می‌شود و حرکت قوانین متوقف است. سپس آجرهای مرحلهٔ بعد طی ۰٫۶۵ ثانیه ظاهر می‌شوند و توپ منتظر فرمان پرتاب کاربر می‌ماند. توقف بازی و خروج به هاب، زمان این بازه را نگه می‌دارد. تصویر اجرایی اثرها: `Documentation/CrystalBreakerEffects.png`؛ اجرای تشخیصی با `--breaker-effects-capture`.

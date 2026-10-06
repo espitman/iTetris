@@ -21,6 +21,12 @@ SMOKE PASS: ordinary bricks use single-rim art
 SMOKE PASS: stage three armor uses reinforced intact art
 SMOKE PASS: first impact immediately switches to damaged armor art
 SMOKE PASS: second impact destroys damaged armor and scores
+SMOKE PASS: broken crystal fragments retain color 0
+SMOKE PASS: broken crystal fragments retain color 1
+SMOKE PASS: broken crystal fragments retain color 2
+SMOKE PASS: broken crystal fragments retain color 3
+SMOKE PASS: falling rewards show readable distinct labels without blocking launch
+SMOKE PASS: stage clear displays announcement before changing level
 SMOKE PASS: breaker pause reveals navigation menu
 SMOKE PASS: breaker resume clears playfield menu
 SMOKE PASS: breaker powerups are rendered
