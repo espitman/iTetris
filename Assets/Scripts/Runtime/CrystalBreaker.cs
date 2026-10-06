@@ -18,7 +18,7 @@ namespace iTetris
         readonly List<GameObject> breakerGiftViews = new List<GameObject>();
         readonly List<int> breakerHP = new List<int>();
         readonly List<BreakerFragment> breakerFragments = new List<BreakerFragment>();
-        readonly Sprite[] breakerShardSprites = new Sprite[4];
+        readonly Color[] breakerShardColors = {new Color(.12f,.9f,1),new Color(.16f,.36f,1),new Color(.63f,.24f,1),new Color(1,.76f,.27f)};
         Text breakerStageAnnouncement;
         readonly Sprite[] breakerSprites = new Sprite[8];
         readonly Sprite[] breakerDurabilitySprites = new Sprite[8];
@@ -51,12 +51,6 @@ namespace iTetris
                 float center = i == 0 ? 199.5f : i == 1 ? 197f : i == 2 ? 192f : 188f;
                 breakerSprites[i] = Sprite.Create(atlas, new Rect(i * 384 * sx, 512 * sy, 384 * sx, 512 * sy),
                     new Vector2(center / 384f, 225f / 512f), 150 * sx, 0, SpriteMeshType.FullRect);
-            }
-            for(int i=0;i<4;i++)
-            {
-                var shard = Sprite.Create(atlas,new Rect((i*384+160)*sx, (512+195)*sy,80*sx,80*sy),new Vector2(.5f,.5f),150*sx);
-                shard.OverrideGeometry(new[]{new Vector2(-.26f,-.26f),new Vector2(.26f,-.16f),new Vector2(.05f,.26f)},new ushort[]{0,1,2});
-                breakerShardSprites[i]=shard;
             }
             Rect[] rects = { new Rect(0,0,480,512), new Rect(480,0,320,512), new Rect(800,0,330,512), new Rect(1130,0,406,512) };
             Vector2[] centers = { new Vector2(240,278), new Vector2(149,276), new Vector2(172,275), new Vector2(232,277) };
@@ -165,8 +159,9 @@ namespace iTetris
             for(int i=0;i<10;i++)
             {
                 float scale=UnityEngine.Random.Range(.25f,.6f);var shard=BreakerSprite("Refracted glass shard",6,position,scale,20);
-                shard.GetComponent<SpriteRenderer>().sprite=breakerShardSprites[color];
-                shard.transform.localScale=Vector3.one*scale*2.5f;
+                var shardRenderer=shard.GetComponent<SpriteRenderer>();
+                shardRenderer.sharedMaterial=Resources.Load<Material>("Materials/BreakerShard");
+                shardRenderer.color=breakerShardColors[color];
                 shard.transform.localRotation=Quaternion.Euler(0,0,UnityEngine.Random.Range(0,360));
                 breakerFragments.Add(new BreakerFragment{Object=shard,Velocity=new Vector3(UnityEngine.Random.Range(-6f,6f),UnityEngine.Random.Range(-5f,7f),0),Life=.7f,Scale=scale});
             }
@@ -306,7 +301,8 @@ namespace iTetris
             for(int color=0;color<4;color++)
             {
                 BreakerImpact(color*3,0,color);
-                check(breakerFragments[breakerFragments.Count-1].Object.GetComponent<SpriteRenderer>().sprite==breakerShardSprites[color],"broken crystal fragments retain color "+color);
+                var renderer=breakerFragments[breakerFragments.Count-1].Object.GetComponent<SpriteRenderer>();
+                check(renderer.sprite==breakerSprites[6]&&renderer.color==breakerShardColors[color]&&renderer.sharedMaterial.shader.name=="iTetris/BreakerShard","original shard design retains brick color "+color);
             }
             breaker.Gifts.Add(new CrystalBreakerRules.Gift{X=-2,Y=0,Wide=true});
             breaker.Gifts.Add(new CrystalBreakerRules.Gift{X=2,Y=0,Wide=false});DrawBreaker();

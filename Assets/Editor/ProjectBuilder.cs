@@ -49,6 +49,8 @@ namespace iTetris.Editor
                 string path="Assets/Resources/Materials/CrystalGlass"+i+".mat";
                 if(AssetDatabase.LoadAssetAtPath<Material>(path)==null)AssetDatabase.CreateAsset(CrystalView.Lit(CrystalView.Palette[i],.35f,.87f,CrystalView.Palette[i]*.16f),path);
             }
+            string shardPath="Assets/Resources/Materials/BreakerShard.mat";
+            if(!File.Exists(shardPath))AssetDatabase.CreateAsset(new Material(Shader.Find("iTetris/BreakerShard")),shardPath);
             string trailPath="Assets/Resources/Materials/BreakerTrail.mat";
             if(AssetDatabase.LoadAssetAtPath<Material>(trailPath)==null)
                 AssetDatabase.CreateAsset(new Material(Shader.Find("iTetris/BreakerLightTrail")),trailPath);
