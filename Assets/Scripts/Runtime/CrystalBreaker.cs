@@ -124,7 +124,7 @@ namespace iTetris
             var root=breakerUi.transform;
             HudImage(root,0,new Vector2(0,464),new Vector2(430,80));
             HudImage(root,1,new Vector2(-527,464),new Vector2(240,53));
-            breakerStats=BreakerLabel(root,"000000",new Vector2(-527,464),new Vector2(190,42),30);
+            breakerStats=BreakerLabel(root,"000000",new Vector2(-527,470),new Vector2(190,42),30);
             HudImage(root,2,new Vector2(483,464),new Vector2(55,67));
             breakerLevel=BreakerLabel(root,"1",new Vector2(483,464),new Vector2(45,40),26);
             for(int i=0;i<3;i++)breakerLives[i]=HudImage(root,3,new Vector2(557+i*44,464),new Vector2(25,53));
