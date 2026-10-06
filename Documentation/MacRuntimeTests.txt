@@ -17,6 +17,10 @@ SMOKE PASS: Crystal Breaker card is playable on Mac
 SMOKE PASS: breaker opens from its card
 SMOKE PASS: reference header renders serif score, level and three lives
 SMOKE PASS: reference layout uses independent faceted crystal sprites
+SMOKE PASS: ordinary bricks use single-rim art
+SMOKE PASS: stage three armor uses reinforced intact art
+SMOKE PASS: first impact immediately switches to damaged armor art
+SMOKE PASS: second impact destroys damaged armor and scores
 SMOKE PASS: breaker pause reveals navigation menu
 SMOKE PASS: breaker resume clears playfield menu
 SMOKE PASS: breaker powerups are rendered

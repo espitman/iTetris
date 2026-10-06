@@ -19,6 +19,7 @@ namespace iTetris
         readonly List<int> breakerHP = new List<int>();
         readonly List<BreakerFragment> breakerFragments = new List<BreakerFragment>();
         readonly Sprite[] breakerSprites = new Sprite[8];
+        readonly Sprite[] breakerDurabilitySprites = new Sprite[8];
         readonly Image[] breakerLives = new Image[3];
         Text breakerStats, breakerLevel, breakerMessage, breakerBestText, breakerCombo, breakerMenuTitle;
         Button breakerPause, breakerResume;
@@ -57,6 +58,16 @@ namespace iTetris
                 breakerSprites[4+i] = Sprite.Create(atlas, new Rect(r.x*sx,r.y*sy,r.width*sx,r.height*sy),
                     new Vector2(centers[i].x/r.width,centers[i].y/r.height),150*sx,0,SpriteMeshType.FullRect);
             }
+            var armor = Resources.Load<Texture2D>("Art/BreakerDurability");
+            float cellWidth = armor.width / 4f, cellHeight = armor.height / 2f;
+            // Calibrated to the core of each generated sprite, excluding the broken corner debris.
+            float[] armorCenters = {228,225,223,222};
+            for (int state = 0; state < 2; state++)
+                for (int color = 0; color < 4; color++)
+                    breakerDurabilitySprites[state*4+color] = Sprite.Create(armor,
+                        new Rect(color*cellWidth,(1-state)*cellHeight,cellWidth,cellHeight),
+                        new Vector2(armorCenters[color]/cellWidth,(state==0?cellHeight-260:cellHeight-169)/cellHeight),
+                        150,0,SpriteMeshType.FullRect);
         }
         GameObject BreakerSprite(string name, int sprite, Vector3 position, float scale, int order = 0)
         {
@@ -196,7 +207,11 @@ namespace iTetris
                 foreach(var brick in breaker.Bricks)
                 {
                     var obj=BreakerSprite("Faceted crystal brick",brick.Color,BreakerPosition(brick.X,brick.Y),1.49f,5);
-                    if(brick.HP>1)obj.GetComponent<SpriteRenderer>().color=new Color(.93f,.97f,1);
+                    if(brick.MaxHP>1)
+                    {
+                        obj.GetComponent<SpriteRenderer>().sprite=breakerDurabilitySprites[(brick.HP>1?0:4)+brick.Color];
+                        obj.transform.localScale=new Vector3(1.30f,1.03f,1);
+                    }
                     breakerObjects.Add(obj);breakerHP.Add(brick.HP);
                 }
                 breakerStage=breaker.Stage;
@@ -240,10 +255,36 @@ namespace iTetris
                     obj.GetComponent<SpriteRenderer>().color=gift.Wide?new Color(1,.84f,.4f):new Color(.8f,.5f,1);}
             }
         }
+        void VerifyBreakerDurability(Action<bool,string> check)
+        {
+            check(breaker.Bricks[0].MaxHP==1&&breakerObjects[0].GetComponent<SpriteRenderer>().sprite==breakerSprites[breaker.Bricks[0].Color],"ordinary bricks use single-rim art");
+            for(int i=0;i<2;i++){breaker.Launch();breaker.Bricks.Clear();breaker.Tick(.01f);}
+            DrawBreaker();var brick=breaker.Bricks[0];
+            check(brick.MaxHP==2&&brick.HP==2&&breakerObjects[0].GetComponent<SpriteRenderer>().sprite==breakerDurabilitySprites[brick.Color],"stage three armor uses reinforced intact art");
+            breaker.Launch();var ball=breaker.Balls[0];
+            for(int hit=0;hit<2;hit++)
+            {
+                ball.X=brick.X;ball.Y=brick.Y+CrystalBreakerRules.BrickHalfHeight+CrystalBreakerRules.Radius+.02f;
+                ball.VX=0;ball.VY=-9;breaker.Tick(.02f);DrawBreaker();
+                if(hit==0)check(brick.HP==1&&brick.MaxHP==2&&breakerObjects[0].GetComponent<SpriteRenderer>().sprite==breakerDurabilitySprites[4+brick.Color],"first impact immediately switches to damaged armor art");
+                else check(!breaker.Bricks.Contains(brick)&&breaker.Score==300,"second impact destroys damaged armor and scores");
+            }
+            NewBreaker();
+        }
         #if !UNITY_WEBGL || UNITY_EDITOR
         IEnumerator BreakerCapture()
         {
             yield return new WaitForSecondsRealtime(1);OpenBreaker();breakerCaptureMode=true;breaker.Launch();
+            if(Array.IndexOf(Environment.GetCommandLineArgs(),"--breaker-durability-capture")>=0)
+            {
+                for(int stage=0;stage<2;stage++){breaker.Bricks.Clear();breaker.Tick(.01f);breaker.Launch();}
+                for(int i=0;i<8;i+=2)
+                {
+                    var brick=breaker.Bricks[i];var hit=breaker.Balls[0];hit.X=brick.X;
+                    hit.Y=brick.Y+CrystalBreakerRules.BrickHalfHeight+CrystalBreakerRules.Radius+.02f;
+                    hit.VX=0;hit.VY=-9;breaker.Tick(.02f);
+                }
+            }
             var ball=breaker.Balls[0];ball.X=5.5f;ball.Y=1.5f;ball.VX=-4;ball.VY=-7;DrawBreaker();yield return null;ClearBreakerTrails();
             // A short simulated flight gives the live ball its real TrailRenderer history.
             for(int i=0;i<30;i++){ball.X=5.5f-i*.1f;ball.Y=1.5f-i*.105f;DrawBreaker();yield return null;}

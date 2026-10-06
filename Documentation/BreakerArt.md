@@ -27,4 +27,14 @@
 
 ## اعتبارسنجی
 
-۴۳ بررسی قوانین با `dotnet run --project Tools/RulesTests.csproj`؛ نتایج در `Documentation/RulesTests.txt`. ۴۴ بررسی اجرایی مک با `--smoke-test` شامل هاب، سه بازی، نمایش هدر، آجرهای مستقل، توقف و ادامه و قدرت‌ها است؛ نتایج در `Documentation/MacRuntimeTests.txt`. خروجی مک Universal برای arm64 و x86_64 است. خروجی وب و Android در این تغییر ساخته یا منتشر نشده‌اند.
+۴۳ بررسی قوانین با `dotnet run --project Tools/RulesTests.csproj`؛ نتایج در `Documentation/RulesTests.txt`. ۴۸ بررسی اجرایی مک با `--smoke-test` شامل هاب، سه بازی، نمایش هدر، آجرهای مستقل، توقف و ادامه و قدرت‌ها و تغییر ظاهر پس از برخورد اول و شکستن پس از برخورد دوم است؛ نتایج در `Documentation/MacRuntimeTests.txt`. خروجی مک Universal برای arm64 و x86_64 است. خروجی وب و Android در این تغییر ساخته یا منتشر نشده‌اند.
+
+## دوام آجرها
+
+آجر معمولی همان قاب باریک قبلی را دارد. آجر دوضربه‌ای از مرحلهٔ سوم، قاب دولایه و چهار گوشهٔ الماسی دارد؛ ضربهٔ اول تصویرش را همان لحظه به قاب شکسته و ترک مرکزی تغییر می‌دهد و رنگ آن حفظ می‌شود. `MaxHP` دوام اولیه را نگه می‌دارد تا آجر مقاوم با یک ضربهٔ باقی‌مانده با آجر معمولی اشتباه نشود. ضربهٔ دوم آن را از بین می‌برد.
+
+اطلس جدید RGBA: `Assets/Resources/Art/BreakerDurability.png`، ابعاد واقعی ۱۷۷۴×۸۸۷، چهار رنگ در دو حالت سالم و آسیب‌دیده. برش، محور و اندازهٔ نمایش از حدود آلفای واقعی کالیبره شده‌اند. تصویر واقعی مرحلهٔ سوم: `Documentation/CrystalBreakerDurability.png`.
+
+تولید با `image_gen` در حالت edit، با طرح سه‌حالتهٔ تأییدشده به‌عنوان مرجع: `exec-a5700488-7519-4e01-b487-9b68476cb1da.png`. خروجی اصلی `exec-e573425d-0c84-40ef-ba39-f17cf86c11aa.png` در پوشهٔ generated_images نگه داشته شده است. پرامپت نهایی:
+
+> Production game sprite atlas, edit/reference input is the approved Crystal Breaker durability design. Extract the CENTER armored pristine brick and RIGHT damaged armored brick into game-ready sprites. True transparent RGBA background, NO text, no labels, no backdrop, no cards. Strict 4 columns x 2 rows grid on a 2048x1024 canvas. Each cell exactly 512x512. Top row: intact ARMORED bricks colored cyan, sapphire blue, violet, champagne gold. Bottom row: corresponding DAMAGED armored bricks after one hit, same four colors. Every brick perfectly centered in its own cell, identical frontal orthographic angle, identical 400px-wide by 185px-high outer bounds including reinforced corner caps. Generous completely transparent padding. Keep approved realistic translucent crystal facets, WHITE luminous DOUBLE layered rim and four chunky diamond reinforcement corners for intact bricks. Damaged bricks keep the same connected rectangular main core but have clearly shattered outer frame, broken two corner caps, dark central impact star and branching luminous cracks, one remaining hit. Keep debris contained inside each cell close to the broken rim, no explosion. Preserve hue in each column between both states. Damage must be unmistakable in a small sprite. No cartoon or vector or opaque background.

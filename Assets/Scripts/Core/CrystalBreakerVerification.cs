@@ -9,7 +9,7 @@ namespace iTetris.Core
    g.Balls[0].X=CrystalBreakerRules.Wall-CrystalBreakerRules.Radius-.01f;g.Balls[0].Y=0;g.Balls[0].VX=12;g.Balls[0].VY=0;g.Tick(.02f);Check(g.Balls[0].VX<0,"side wall reflects ball");
    g.SetPaddle(0);var b=g.Balls[0];b.X=1;b.Y=CrystalBreakerRules.PaddleY+.65f;b.VX=0;b.VY=-15;g.Tick(.02f);Check(b.VY>0&&b.VX>0,"paddle steers upward with minimum vertical speed");
    g.Power(true);Check(g.HalfWidth==4.3f,"wide power enlarges paddle");g.Power(false);Check(g.Balls.Count==2,"multiball creates extra ball");foreach(var ball in g.Balls){ball.Y=-11;}g.Tick(.01f);Check(g.Lives==2&&g.Waiting&&g.Balls.Count==1,"loss consumes one life and serves");
-   g.Launch();g.Bricks.Clear();g.Bricks.Add(new CrystalBreakerRules.Brick{X=0,Y=0,HP=2});b=g.Balls[0];b.X=0;b.Y=-.7f;b.VX=0;b.VY=30;g.Tick(.01f);Check(g.Bricks[0].HP==1&&b.VY<0&&g.Score==0,"fast ball hits armored brick without tunneling");
+   g.Launch();g.Bricks.Clear();g.Bricks.Add(new CrystalBreakerRules.Brick{X=0,Y=0,HP=2,MaxHP=2});b=g.Balls[0];b.X=0;b.Y=-.7f;b.VX=0;b.VY=30;g.Tick(.01f);Check(g.Bricks[0].HP==1&&g.Bricks[0].MaxHP==2&&b.VY<0&&g.Score==0,"fast ball hits armored brick without tunneling");
    b.Y=-.7f;b.VY=30;g.Tick(.01f);Check(g.Stage==2&&g.Score==100&&g.Waiting,"last brick scores and advances stage");
    g.Stage=5;g.Bricks.Clear();g.Launch();g.Tick(.01f);Check(g.Over&&g.Won,"final stage victory");
    g=new CrystalBreakerRules();g.Launch();g.Gifts.Add(new CrystalBreakerRules.Gift{X=0,Y=CrystalBreakerRules.PaddleY+.36f,Wide=true});g.Tick(.02f);Check(g.Gifts.Count==0&&g.WideTime>14,"falling power is caught by paddle");g.WideTime=.001f;g.Tick(.01f);Check(g.HalfWidth==3.3f,"wide power expires");

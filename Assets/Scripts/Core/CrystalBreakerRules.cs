@@ -8,7 +8,7 @@ namespace iTetris.Core
         public const float Wall = 11.85f, Ceiling = 6.7f, PaddleY = -6f, Radius = .27f;
         public const float BrickHalfWidth = 1.04f, BrickHalfHeight = .42f;
         public sealed class Ball { public float X, Y, VX, VY; }
-        public sealed class Brick { public float X, Y; public int HP, Color; }
+        public sealed class Brick { public float X, Y; public int HP, Color; public int MaxHP = 1; }
         public sealed class Gift { public float X, Y; public bool Wide; }
         public readonly List<Ball> Balls = new List<Ball>();
         public readonly List<Brick> Bricks = new List<Brick>();
@@ -41,7 +41,7 @@ namespace iTetris.Core
                     if ((row == 1 && (col == 1 || col == 5)) || (row == 2 && (col == 2 || col == 6)) || (row == 3 && col == 3)) continue;
                     float offset = row == 1 ? -.22f : row == 2 ? .1f : row == 3 ? -.12f : 0;
                     Bricks.Add(new Brick { X = (col - 3.5f) * 2.3f + offset, Y = 5.2f - row * 1.02f,
-                        HP = Stage > 2 && row == 0 ? 2 : 1, Color = (colors[row,col] + (Stage-1)/3) % 4 });
+                        MaxHP = Stage > 2 && row == 0 ? 2 : 1, HP = Stage > 2 && row == 0 ? 2 : 1, Color = (colors[row,col] + (Stage-1)/3) % 4 });
                 }
             SetPaddle(Paddle); Serve();
         }
