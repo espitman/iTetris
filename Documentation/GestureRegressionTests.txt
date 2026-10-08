@@ -1,0 +1,17 @@
+PASS long downward flick with right drift does not move horizontally
+PASS long downward flick with left drift does not move horizontally
+PASS right drift cannot accumulate over several downward samples
+PASS left drift cannot accumulate over several downward samples
+PASS final release sample cannot add a horizontal move before the drop
+PASS duplicate release cannot drop a second piece
+PASS unconsumed horizontal remainder is discarded when turning downward
+PASS intentional right movement is preserved before downward flick
+PASS intentional left movement is preserved before downward flick
+PASS changing direction back to horizontal permits an intentional move
+PASS slow downward drag stays soft drop without sideways drift
+PASS ordinary horizontal drag remains responsive
+PASS short fast downward flick still drops on release
+PASS upward hold flick also ignores lateral drift
+PASS cancelled pointer cannot drop
+PASS stationary tap still rotates through the tap callback
+PASS pausing before release does not trigger hard drop

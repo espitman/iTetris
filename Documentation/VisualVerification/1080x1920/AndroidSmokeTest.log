@@ -1,0 +1,403 @@
+--------- beginning of main
+10-07 05:20:45.627 10311 10311 V Unity   : Context Type: GameActivity
+10-07 05:20:45.663 10311 10350 I Unity   : UnityApplication::CreateInstance
+10-07 05:20:45.663 10311 10350 I Unity   : GameActivity Package Version '4.4.2'
+10-07 05:20:45.671 10311 10350 I Unity   : Starting Game Loop
+10-07 05:20:45.708 10311 10350 I Unity   : Handle cmd APP_CMD_START(11)
+10-07 05:20:45.718 10311 10350 I Unity   : Handle cmd APP_CMD_RESUME(12)
+10-07 05:20:45.754 10311 10350 I Unity   : Handle cmd APP_CMD_WINDOW_INSETS_CHANGED(17)
+10-07 05:20:45.762 10311 10350 I Unity   : Handle cmd APP_CMD_WINDOW_INSETS_CHANGED(17)
+10-07 05:20:45.763 10311 10350 I Unity   : Handle cmd APP_CMD_CONTENT_RECT_CHANGED(5)
+10-07 05:20:45.767 10311 10350 I Unity   : Handle cmd APP_CMD_INIT_WINDOW(1)
+10-07 05:20:45.851 10311 10350 I Unity   : MemoryManager: Using 'Dynamic Heap' Allocator.
+10-07 05:20:46.073 10311 10350 I Unity   : SystemInfo CPU = ARM64 FP ASIMD AES, Cores = 2, Memory = 1974mb
+10-07 05:20:46.073 10311 10350 I Unity   : SystemInfo ARM big.LITTLE configuration: 2 big (mask: 0x3), 0 little (mask: 0x0)
+10-07 05:20:46.073 10311 10350 I Unity   : ApplicationInfo 'com.itetris.mobile', Version '1.0.4', Min API Level '26', Target API Level '36'
+10-07 05:20:46.073 10311 10350 I Unity   : Built from '6000.0/staging' branch, Version '6000.0.83f1 (dacc44548933)', Build type 'Release', Scripting Backend 'il2cpp', CPU 'arm64-v8a', Stripping 'Enabled'
+10-07 05:20:46.073 10311 10350 I Unity   : Device Model 'Google sdk_gphone64_arm64', OS 'Android OS 16 (API 36)'
+10-07 05:20:46.157 10311 10350 I Unity   : Company Name: iTetris
+10-07 05:20:46.157 10311 10350 I Unity   : Product Name: iTetris Mobile
+10-07 05:20:46.575 10311 10350 I Unity   :     HasWindow = 1, HasFocus = 0
+10-07 05:20:46.575 10311 10350 I Unity   : Handle cmd APP_CMD_WINDOW_RESIZED(3)
+10-07 05:20:46.575 10311 10350 I Unity   : Handle cmd APP_CMD_WINDOW_REDRAW_NEEDED(4)
+10-07 05:20:46.575 10311 10350 I Unity   : Handle cmd APP_CMD_GAINED_FOCUS(7)
+10-07 05:20:46.575 10311 10350 I Unity   : Handle cmd APP_CMD_WINDOW_INSETS_CHANGED(17)
+10-07 05:20:46.575 10311 10350 I Unity   : Handle cmd APP_CMD_WINDOW_INSETS_CHANGED(17)
+10-07 05:20:47.128 10311 10350 I Unity   : RenderGraph is now enabled.
+10-07 05:20:47.128 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.128 10311 10350 I Unity   : UnityEngine.Rendering.Universal.UniversalRenderPipeline:.ctor(UniversalRenderPipelineAsset)
+10-07 05:20:47.128 10311 10350 I Unity   : UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset:CreatePipeline()
+10-07 05:20:47.128 10311 10350 I Unity   : UnityEngine.Rendering.RenderPipelineAsset:InternalCreatePipeline()
+10-07 05:20:47.128 10311 10350 I Unity   : UnityEngine.Rendering.RenderPipelineManager:TryPrepareRenderPipeline(RenderPipelineAsset)
+10-07 05:20:47.128 10311 10350 I Unity   : UnityEngine.Rendering.RenderPipelineManager:DoRenderLoop_Internal(RenderPipelineAsset, IntPtr, Object)
+10-07 05:20:47.128 10311 10350 I Unity   :
+10-07 05:20:47.635 10311 10350 I Unity   : SMOKE PASS: hub is the native startup screen
+10-07 05:20:47.635 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.635 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.635 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.635 10311 10350 I Unity   :
+10-07 05:20:47.636 10311 10350 I Unity   : SMOKE PASS: Brick Garden is playable in hub
+10-07 05:20:47.636 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.636 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.636 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.636 10311 10350 I Unity   :
+10-07 05:20:47.659 10311 10350 I Unity   : SMOKE PASS: garden opens independently of Tetris
+10-07 05:20:47.659 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.659 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.659 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.659 10311 10350 I Unity   :
+10-07 05:20:47.659 10311 10350 I Unity   : SMOKE PASS: garden tile selection merges neighbours
+10-07 05:20:47.659 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.659 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.659 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.659 10311 10350 I Unity   :
+10-07 05:20:47.659 10311 10350 I Unity   : SMOKE PASS: garden places preview on empty tile
+10-07 05:20:47.659 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.659 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.659 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.659 10311 10350 I Unity   :
+10-07 05:20:47.673 10311 10350 I Unity   : SMOKE PASS: garden tile collider accepts mouse ray
+10-07 05:20:47.673 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.673 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.673 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.673 10311 10350 I Unity   :
+10-07 05:20:47.673 10311 10350 I Unity   : SMOKE PASS: garden save payload round trips
+10-07 05:20:47.673 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.673 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.673 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.673 10311 10350 I Unity   :
+10-07 05:20:47.673 10311 10350 I Unity   : SMOKE PASS: garden pause menu
+10-07 05:20:47.673 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.673 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.673 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.673 10311 10350 I Unity   :
+10-07 05:20:47.673 10311 10350 I Unity   : SMOKE PASS: garden resumes
+10-07 05:20:47.673 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.673 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.673 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.673 10311 10350 I Unity   :
+10-07 05:20:47.674 10311 10350 I Unity   : SMOKE PASS: garden returns to hub
+10-07 05:20:47.674 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.674 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.674 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.674 10311 10350 I Unity   :
+10-07 05:20:47.676 10311 10350 I Unity   : SMOKE PASS: garden state survives hub navigation
+10-07 05:20:47.676 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.676 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.676 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.676 10311 10350 I Unity   :
+10-07 05:20:47.676 10311 10350 I Unity   : SMOKE PASS: garden ends when full without matching neighbours
+10-07 05:20:47.676 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.676 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.676 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.676 10311 10350 I Unity   :
+10-07 05:20:47.677 10311 10350 I Unity   : SMOKE PASS: new garden restarts after completion
+10-07 05:20:47.677 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.677 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.677 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.677 10311 10350 I Unity   :
+10-07 05:20:47.678 10311 10350 I Unity   : SMOKE PASS: library scrolls to last game
+10-07 05:20:47.678 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.678 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.678 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.678 10311 10350 I Unity   :
+10-07 05:20:47.679 10311 10350 I Unity   : SMOKE PASS: upcoming card 2 stays unavailable
+10-07 05:20:47.679 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.679 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.679 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.679 10311 10350 I Unity   :
+10-07 05:20:47.680 10311 10350 I Unity   : SMOKE PASS: upcoming card 3 stays unavailable
+10-07 05:20:47.680 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.680 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.680 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.680 10311 10350 I Unity   :
+10-07 05:20:47.681 10311 10350 I Unity   : SMOKE PASS: upcoming card 4 stays unavailable
+10-07 05:20:47.681 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.681 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.681 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.681 10311 10350 I Unity   :
+10-07 05:20:47.681 10311 10350 I Unity   : SMOKE PASS: upcoming card 5 stays unavailable
+10-07 05:20:47.681 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.681 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.681 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.681 10311 10350 I Unity   :
+10-07 05:20:47.682 10311 10350 I Unity   : SMOKE PASS: Tetris opens from hub
+10-07 05:20:47.682 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.682 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.682 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.682 10311 10350 I Unity   :
+10-07 05:20:47.891 10311 10350 I Unity   : SMOKE PASS: return to hub freezes current game
+10-07 05:20:47.891 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.891 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.891 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.891 10311 10350 I Unity   :
+10-07 05:20:47.892 10311 10350 I Unity   : SMOKE PASS: card resume returns directly to Tetris
+10-07 05:20:47.892 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.892 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.892 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.892 10311 10350 I Unity   :
+10-07 05:20:47.892 10311 10350 I Unity   : SMOKE PASS: start menu closes
+10-07 05:20:47.892 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.892 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.892 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.892 10311 10350 I Unity   :
+10-07 05:20:47.893 10311 10350 I Unity   : SMOKE PASS: hold input action
+10-07 05:20:47.893 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.893 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.893 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.893 10311 10350 I Unity   :
+10-07 05:20:47.893 10311 10350 I Unity   : SMOKE PASS: held piece is rendered
+10-07 05:20:47.893 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.893 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.893 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.893 10311 10350 I Unity   :
+10-07 05:20:47.893 10311 10350 I Unity   : SMOKE PASS: move and rotate actions
+10-07 05:20:47.893 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.893 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.893 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.893 10311 10350 I Unity   :
+10-07 05:20:47.895 10311 10350 I Unity   : SMOKE PASS: drop updates score
+10-07 05:20:47.895 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.895 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.895 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.895 10311 10350 I Unity   :
+10-07 05:20:47.898 10311 10350 I Unity   : SMOKE PASS: line clear animation starts
+10-07 05:20:47.898 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:47.898 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:47.898 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:47.898 10311 10350 I Unity   :
+10-07 05:20:48.174 10311 10350 I Unity   : SMOKE PASS: line clear finishes with correct score
+10-07 05:20:48.174 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:48.174 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:48.174 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:48.174 10311 10350 I Unity   :
+10-07 05:20:48.175 10311 10350 I Unity   : SMOKE PASS: pause menu opens
+10-07 05:20:48.175 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:48.175 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:48.175 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:48.175 10311 10350 I Unity   :
+10-07 05:20:48.175 10311 10350 I Unity   : SMOKE PASS: resume closes menu
+10-07 05:20:48.175 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:48.175 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:48.175 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:48.175 10311 10350 I Unity   :
+10-07 05:20:48.175 10311 10350 I Unity   : SMOKE PASS: help pauses game
+10-07 05:20:48.175 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:48.175 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:48.175 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:48.175 10311 10350 I Unity   :
+10-07 05:20:48.176 10311 10350 I Unity   : SMOKE PASS: help restores play
+10-07 05:20:48.176 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:48.176 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:48.176 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:48.176 10311 10350 I Unity   :
+10-07 05:20:48.176 10311 10350 I Unity   : SMOKE PASS: sound toggle
+10-07 05:20:48.176 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:48.176 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:48.176 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:48.176 10311 10350 I Unity   :
+10-07 05:20:48.219 10311 10350 I Unity   : SMOKE PASS: game over menu
+10-07 05:20:48.219 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:48.219 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:48.219 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:48.219 10311 10350 I Unity   :
+10-07 05:20:48.219 10311 10350 I Unity   : SMOKE PASS: restart resets game
+10-07 05:20:48.219 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:48.219 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:20:48.219 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:48.219 10311 10350 I Unity   :
+10-07 05:20:50.249 10311 10350 I Unity   : SMOKE PASS: Android Tetris uses portrait orientation
+10-07 05:20:50.249 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.249 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.249 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.249 10311 10350 I Unity   :
+10-07 05:20:50.249 10311 10350 I Unity   : SMOKE PASS: portrait gesture surface is visible
+10-07 05:20:50.249 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.249 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.249 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.249 10311 10350 I Unity   :
+10-07 05:20:50.249 10311 10350 I Unity   : SMOKE PASS: movement uses no buttons
+10-07 05:20:50.249 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.249 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.249 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.249 10311 10350 I Unity   :
+10-07 05:20:50.249 10311 10350 I Unity   : SMOKE PASS: finger drag moves piece left without rotating
+10-07 05:20:50.249 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.249 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.249 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.249 10311 10350 I Unity   :
+10-07 05:20:50.252 10311 10350 I Unity   : SMOKE PASS: hold box swaps piece
+10-07 05:20:50.252 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.252 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.252 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.252 10311 10350 I Unity   :
+10-07 05:20:50.253 10311 10350 I Unity   : SMOKE PASS: right-side tap rotates clockwise
+10-07 05:20:50.253 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.253 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.253 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.253 10311 10350 I Unity   :
+10-07 05:20:50.253 10311 10350 I Unity   : SMOKE PASS: left-side tap rotates counterclockwise
+10-07 05:20:50.253 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.253 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.253 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.253 10311 10350 I Unity   :
+10-07 05:20:50.254 10311 10350 I Unity   : SMOKE PASS: long slow downward drag remains soft drop after release
+10-07 05:20:50.254 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.254 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.254 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.254 10311 10350 I Unity   :
+10-07 05:20:50.254 10311 10350 I Unity   : SMOKE PASS: fast downward flick waits for release
+10-07 05:20:50.254 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.254 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.254 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.254 10311 10350 I Unity   :
+10-07 05:20:50.255 10311 10350 I Unity   : SMOKE PASS: short fast downward flick hard drops exactly one piece
+10-07 05:20:50.255 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.255 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.255 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.255 10311 10350 I Unity   :
+10-07 05:20:50.255 10311 10350 I Unity   : SMOKE PASS: duplicate release never drops a second piece
+10-07 05:20:50.255 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.255 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.255 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.255 10311 10350 I Unity   :
+10-07 05:20:50.255 10311 10350 I Unity   : SMOKE PASS: downward flick after a long horizontal drag still hard drops
+10-07 05:20:50.255 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.255 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.255 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.255 10311 10350 I Unity   :
+10-07 05:20:50.255 10311 10350 I Unity   : SMOKE PASS: pausing before release does not turn a drag into a hard drop
+10-07 05:20:50.255 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.255 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.255 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.255 10311 10350 I Unity   :
+10-07 05:20:50.255 10311 10350 I Unity   : SMOKE PASS: cancelled gesture does not hard drop
+10-07 05:20:50.255 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.255 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.255 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.255 10311 10350 I Unity   :
+10-07 05:20:50.255 10311 10350 I Unity   : SMOKE PASS: locking during a gesture protects the next piece
+10-07 05:20:50.255 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.255 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.255 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.255 10311 10350 I Unity   :
+10-07 05:20:50.262 10311 10350 I Unity   : SMOKE PASS: upward flick holds the piece
+10-07 05:20:50.262 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.262 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.262 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.262 10311 10350 I Unity   :
+10-07 05:20:50.263 10311 10350 I Unity   : SMOKE PASS: hold box accepts UI raycast
+10-07 05:20:50.263 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.263 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.263 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.263 10311 10350 I Unity   :
+10-07 05:20:50.263 10311 10350 I Unity   : SMOKE PASS: portrait board fits within safe area
+10-07 05:20:50.263 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.263 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.263 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.263 10311 10350 I Unity   :
+10-07 05:20:50.264 10311 10350 I Unity   : SMOKE PASS: backgrounding pauses Tetris
+10-07 05:20:50.264 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.264 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.264 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.264 10311 10350 I Unity   :
+10-07 05:20:50.267 10311 10350 I Unity   : SMOKE PASS: HOLD and three NEXT stay wholly above the board
+10-07 05:20:50.267 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.267 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.267 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.267 10311 10350 I Unity   :
+10-07 05:20:50.267 10311 10350 I Unity   : SMOKE PASS: exactly three NEXT previews are visible
+10-07 05:20:50.267 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.267 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.267 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.267 10311 10350 I Unity   :
+10-07 05:20:50.267 10311 10350 I Unity   : SMOKE PASS: previews use the original gameplay crystal mesh
+10-07 05:20:50.267 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.267 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.267 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.267 10311 10350 I Unity   :
+10-07 05:20:50.267 10311 10350 I Unity   : SMOKE PASS: pause uses a dedicated page without covering the board
+10-07 05:20:50.267 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.267 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.267 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.267 10311 10350 I Unity   :
+10-07 05:20:50.267 10311 10350 I Unity   : SMOKE PASS: approved artwork keeps original pixel dimensions
+10-07 05:20:50.267 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.267 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.267 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.267 10311 10350 I Unity   :
+10-07 05:20:50.267 10311 10350 I Unity   : SMOKE PASS: pause preserves artwork aspect ratio
+10-07 05:20:50.267 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.267 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.267 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.267 10311 10350 I Unity   :
+10-07 05:20:50.872 10311 10350 I Unity   : SMOKE PASS: pause sound button mutes audio
+10-07 05:20:50.872 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:50.872 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:50.872 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:50.872 10311 10350 I Unity   :
+10-07 05:20:51.435 10311 10350 I Unity   : SMOKE PASS: pause sound button restores audio
+10-07 05:20:51.435 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:51.435 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:51.435 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:51.435 10311 10350 I Unity   :
+10-07 05:20:51.460 10311 10350 I Unity   : SMOKE PASS: RESUME returns to the unobstructed board
+10-07 05:20:51.460 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:51.460 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:51.460 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:51.460 10311 10350 I Unity   :
+10-07 05:20:51.465 10311 10350 I Unity   : SMOKE PASS: NEW GAME restarts from pause
+10-07 05:20:51.465 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:51.465 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:51.465 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:51.465 10311 10350 I Unity   :
+10-07 05:20:51.466 10311 10350 I Unity   : SMOKE PASS: MAIN MENU preserves and pauses the running game
+10-07 05:20:51.466 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:51.466 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:51.466 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:51.466 10311 10350 I Unity   :
+10-07 05:20:52.572 10311 10350 I Unity   : SMOKE PASS: home opens the controls guide
+10-07 05:20:52.572 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:52.572 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:52.572 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:52.572 10311 10350 I Unity   :
+10-07 05:20:53.140 10311 10350 I Unity   : SMOKE PASS: guide returns to home without resuming play
+10-07 05:20:53.140 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:53.140 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:53.140 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:53.140 10311 10350 I Unity   :
+10-07 05:20:53.141 10311 10350 I Unity   : SMOKE PASS: game over keeps the board unobstructed on a separate page
+10-07 05:20:53.141 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:53.141 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:53.141 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:53.141 10311 10350 I Unity   :
+10-07 05:20:54.841 10311 10350 I Unity   : SMOKE PASS: a real completed game opens the game over page
+10-07 05:20:54.841 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:54.841 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:54.841 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:54.841 10311 10350 I Unity   :
+10-07 05:20:54.842 10311 10350 I Unity   : SMOKE PASS: PLAY AGAIN restarts a completed game
+10-07 05:20:54.842 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:54.842 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:54.842 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:54.842 10311 10350 I Unity   :
+10-07 05:20:58.533 10311 10350 I Unity   : SMOKE PASS: mobile stays in portrait orientation
+10-07 05:20:58.533 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:20:58.533 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:20:58.533 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:20:58.533 10311 10350 I Unity   :
+10-07 05:21:01.597 10311 10350 I Unity   : SMOKE PASS: garden screen touch selects calibrated pedestal
+10-07 05:21:01.597 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:21:01.597 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:21:01.597 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:21:01.597 10311 10350 I Unity   :
+10-07 05:21:01.599 10311 10350 I Unity   : SMOKE PASS: backgrounding pauses garden
+10-07 05:21:01.599 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:21:01.599 10311 10350 I Unity   : iTetris.<MobileSmoke>d__250:MoveNext()
+10-07 05:21:01.599 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:21:01.599 10311 10350 I Unity   :
+10-07 05:21:02.667 10311 10350 I Unity   : ALL RUNTIME SMOKE TESTS PASSED
+10-07 05:21:02.667 10311 10350 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+10-07 05:21:02.667 10311 10350 I Unity   : iTetris.<SmokeTest>d__212:MoveNext()
+10-07 05:21:02.667 10311 10350 I Unity   : UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+10-07 05:21:02.667 10311 10350 I Unity   :

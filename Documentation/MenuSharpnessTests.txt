@@ -1,0 +1,14 @@
+Unity GPU menu sharpening verification — 1080x2400
+Pause: horizontal edge contrast ratio 1.206, mean RGB correction 2.735/255
+GameOver: horizontal edge contrast ratio 1.204, mean RGB correction 2.497/255
+Home: horizontal edge contrast ratio 1.229, mean RGB correction 2.898/255
+
+Date: 2026-10-08
+Version: 1.0.6, Android versionCode 7 (aapt2 verified).
+Unity GPU rendering: actual menu shader on a RawImage at 1080x2400.
+Before/after captures use the reference artwork, not a running Android UI.
+Three comparisons passed; edge contrast increased with bounded RGB correction.
+Both menu and live digit shaders passed shader support/error validation.
+All 17 gesture regression checks passed again. Android ARM64 IL2CPP build succeeded.
+APK: Builds/Android/iTetrisMobile-1.0.6.apk
+SHA256: 3857ee4274a9bd52f6fb6a33a6a1bf22b68ef75e11bb0482d7e14b765566bdfc

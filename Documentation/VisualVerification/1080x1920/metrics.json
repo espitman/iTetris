@@ -1,0 +1,92 @@
+{
+  "Pause": {
+    "mean_absolute_error": 0.4874024241255144,
+    "p95_channel_error": 1.0,
+    "reference_coverage": 1.0,
+    "comparison_rows": [
+      0,
+      1920
+    ],
+    "dimensions": [
+      1080,
+      1920
+    ],
+    "scale": 3.2335329341317367,
+    "regions": {}
+  },
+  "Home": {
+    "mean_absolute_error": 0.5314203960905349,
+    "p95_channel_error": 1.0,
+    "reference_coverage": 1.0,
+    "comparison_rows": [
+      0,
+      1920
+    ],
+    "dimensions": [
+      1080,
+      1920
+    ],
+    "scale": 3.312883435582822,
+    "regions": {
+      "best": {
+        "mean_absolute_error": 1.5794439061154177,
+        "bounds": [
+          474,
+          1780,
+          762,
+          1866
+        ]
+      }
+    }
+  },
+  "Launch": {
+    "mean_absolute_error": 0.47986545138888886,
+    "p95_channel_error": 1.0,
+    "reference_coverage": 1.0,
+    "comparison_rows": [
+      0,
+      1920
+    ],
+    "dimensions": [
+      1080,
+      1920
+    ],
+    "scale": 3.2335329341317367,
+    "regions": {}
+  },
+  "GameOver": {
+    "mean_absolute_error": 0.5046021412037037,
+    "p95_channel_error": 1.0,
+    "reference_coverage": 1.0,
+    "comparison_rows": [
+      0,
+      1920
+    ],
+    "dimensions": [
+      1080,
+      1920
+    ],
+    "scale": 3.375,
+    "regions": {
+      "score": {
+        "mean_absolute_error": 1.0605026788049063,
+        "bounds": [
+          310,
+          739,
+          763,
+          860
+        ]
+      },
+      "best": {
+        "mean_absolute_error": 0.8041558441558442,
+        "bounds": [
+          506,
+          935,
+          756,
+          1012
+        ]
+      }
+    }
+  },
+  "passed": true
+}

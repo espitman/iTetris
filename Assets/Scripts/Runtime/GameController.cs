@@ -55,7 +55,9 @@ namespace iTetris
             audioWorld=gameObject.AddComponent<Soundscape>();audioWorld.Initialize();UpdateSound();
             game=new TetrisGame();game.Changed+=()=>dirty=true;game.Locked+=OnLock;game.Ended+=()=>endedPending=true;
             DrawAttract();ShowMenu("iTetris","CRYSTAL / AURORA", "PLAY",false);
-            BuildHub();BuildTouchControls();OpenHub();
+            if(!mobileMode||mobileDiagnostics){BuildHub();OpenHub();}
+            BuildTouchControls();
+            if(mobileMode){OpenTetris();if(mobileDiagnostics)PrimaryAction();else StartCoroutine(MobileLaunch());}
             #if !UNITY_WEBGL || UNITY_EDITOR
             var launchArgs=Environment.GetCommandLineArgs();
             #if UNITY_ANDROID && !UNITY_EDITOR
@@ -92,11 +94,11 @@ namespace iTetris
             var back=Quad("Aurora lake backdrop",new Vector3(0,0,8),new Vector2(40,25),Color.white,false);
             backdropMaterial=new Material(Shader.Find("iTetris/AuroraBackground"));backdropMaterial.SetTexture("_MainTex",Resources.Load<Texture2D>("Art/AuroraLake"));back.GetComponent<Renderer>().sharedMaterial=backdropMaterial;
             var board=new GameObject("Board frame");board.transform.SetParent(tetrisWorld.transform);board.transform.position=new Vector3(0,-.3f,0);
-            Quad("Board glass",new Vector3(0,-.3f,1),new Vector2(10.1f,20.1f),new Color(.008f,.025f,.04f,.86f));
+            Quad("Board glass",new Vector3(0,-.3f,1),new Vector2(10.1f,20.1f),mobileMode?new Color(.003f,.02f,.052f,.98f):new Color(.008f,.025f,.04f,.86f));
             CrystalView.Outline(board.transform,10.35f,20.35f,.032f,new Color(.47f,1.5f,1.65f),.3f);
             CrystalView.Outline(board.transform,10.65f,20.65f,.014f,new Color(.12f,.44f,.54f),.5f);
-            for(int x=0;x<=10;x++)CrystalView.Line(board.transform,new Vector3(x-5,-10,.6f),new Vector3(x-5,10,.6f),.009f,new Color(.14f,.23f,.30f,.65f));
-            for(int y=0;y<=20;y++)CrystalView.Line(board.transform,new Vector3(-5,y-10,.6f),new Vector3(5,y-10,.6f),.009f,new Color(.14f,.23f,.30f,.65f));
+            for(int x=0;x<=10;x++)CrystalView.Line(board.transform,new Vector3(x-5,-10,.6f),new Vector3(x-5,10,.6f),mobileMode?.018f:.009f,mobileMode?new Color(.015f,.24f,.46f,.8f):new Color(.14f,.23f,.30f,.65f));
+            for(int y=0;y<=20;y++)CrystalView.Line(board.transform,new Vector3(-5,y-10,.6f),new Vector3(5,y-10,.6f),mobileMode?.018f:.009f,mobileMode?new Color(.015f,.24f,.46f,.8f):new Color(.14f,.23f,.30f,.65f));
             var pieces=new GameObject("Crystal pieces");pieces.transform.SetParent(tetrisWorld.transform);crystals=new CrystalView(pieces.transform);
             for(int x=0;x<10;x++)for(int y=0;y<20;y++) {settled[x,y]=crystals.Block(PieceKind.I,BoardPosition(x,y));settled[x,y].SetActive(false);}
             for(int i=0;i<4;i++) {active[i]=crystals.Block(PieceKind.I,Vector3.zero);active[i].SetActive(false);ghosts[i]=crystals.Ghost(PieceKind.I,Vector3.zero);ghosts[i].SetActive(false);}
@@ -203,29 +205,31 @@ namespace iTetris
             var nav=b.navigation;nav.mode=Navigation.Mode.None;b.navigation=nav;
             Label(r,text,Vector2.zero,size-Vector2.one*8,accent?18:13,Pale);return b;
         }
-        void UpdateSound(){if(soundText!=null)soundText.text=audioWorld.Muted?"SOUND OFF":"SOUND ON";}
+        void UpdateSound(){if(soundText!=null)soundText.text=audioWorld.Muted?"SOUND OFF":"SOUND ON";foreach(var t in mobileSoundLabels){t.text=audioWorld.Muted?"SOUND OFF":"SOUND ON";if(t.transform.parent.GetComponent<RawImage>()!=null)t.transform.parent.gameObject.SetActive(audioWorld.Muted);}}
         void ShowMenu(string title,string subtitle,string button,bool secondary)
         {
+            if(mobileMode){ShowMobileMenu(title,subtitle,button,secondary);return;}
             overlay.gameObject.SetActive(true);overlayTitle.text=title;overlaySubtitle.text=subtitle;primaryButton.GetComponentInChildren<Text>().text=button;secondaryButton.gameObject.SetActive(secondary);
         }
-        void RefreshMenuMode(){if(!started)overlaySubtitle.text=zen?"ZEN\nPLACE AT YOUR OWN PACE":"MARATHON\nFIND YOUR FLOW";}
-        void PrimaryAction(){if(started&&!game.GameOver) {paused=false;overlay.gameObject.SetActive(false);ResetInput();}else StartGame();}
+        void RefreshMenuMode(){if(mobileMode){marathonButton.transform.localScale=Vector3.one*(zen?.96f:1);zenButton.transform.localScale=Vector3.one*(zen?1:.96f);return;}if(!started)overlaySubtitle.text=zen?"ZEN\nPLACE AT YOUR OWN PACE":"MARATHON\nFIND YOUR FLOW";}
+        void PrimaryAction(){if(mobileMode)SetMobilePage(MobilePage.Play);if(started&&!game.GameOver) {paused=false;overlay.gameObject.SetActive(false);ResetInput();}else StartGame();}
         void StartGame()
         {
             started=true;paused=false;clearing=false;endedPending=false;elapsed=0;toastTimer=0;toastText.text="";
             if(clearRoutine!=null){StopCoroutine(clearRoutine);clearRoutine=null;}foreach(var flash in clearFlashes)if(flash!=null)Destroy(flash);clearFlashes.Clear();
             for(int x=0;x<10;x++)for(int y=0;y<20;y++)settled[x,y].transform.localScale=Vector3.one;
-            game.Restart();overlay.gameObject.SetActive(false);helpPanel.SetActive(false);dirty=true;ResetInput();
+            game.Restart();if(mobileMode)SetMobilePage(MobilePage.Play);overlay.gameObject.SetActive(false);helpPanel.SetActive(false);dirty=true;ResetInput();
         }
-        void ResetInput(){horizontalTimer=softTimer=0;lastDirection=0;touchLeft=touchRight=touchDown=false;}
+        void ResetInput(){horizontalTimer=softTimer=0;lastDirection=0;if(gestureSurface!=null)gestureSurface.Cancel();}
         void TogglePause()
         {
             if(!started||game.GameOver||helpPanel.activeSelf)return;
-            paused=!paused;ResetInput();if(paused)ShowMenu("PAUSED","TAKE A BREATH","RESUME",true);else overlay.gameObject.SetActive(false);
+            paused=!paused;ResetInput();if(paused)ShowMenu("PAUSED","TAKE A BREATH","RESUME",true);else {overlay.gameObject.SetActive(false);if(mobileMode)SetMobilePage(MobilePage.Play);}
         }
         bool helpWasPaused;
         void ToggleHelp()
         {
+            if(mobileMode){if(mobilePage==MobilePage.Help){paused=helpWasPaused;SetMobilePage(helpReturnPage);}else{helpReturnPage=mobilePage;helpWasPaused=paused;paused=true;SetMobilePage(MobilePage.Help);}return;}
             if(helpPanel.activeSelf){helpPanel.SetActive(false);paused=helpWasPaused;ResetInput();}
             else{helpWasPaused=paused;paused=true;helpPanel.SetActive(true);}
         }
@@ -261,14 +265,14 @@ namespace iTetris
         }
         void HandleInput()
         {
-            int direction=Input.GetKey(KeyCode.LeftArrow)||Input.GetKey(KeyCode.A)||touchLeft?-1:Input.GetKey(KeyCode.RightArrow)||Input.GetKey(KeyCode.D)||touchRight?1:0;
+            int direction=Input.GetKey(KeyCode.LeftArrow)||Input.GetKey(KeyCode.A)?-1:Input.GetKey(KeyCode.RightArrow)||Input.GetKey(KeyCode.D)?1:0;
             if(direction!=lastDirection){horizontalTimer=.16f;if(direction!=0&&game.Move(direction))audioWorld.Play("move");lastDirection=direction;}
             else if(direction!=0){horizontalTimer-=Time.deltaTime;if(horizontalTimer<=0){horizontalTimer+=.045f;if(game.Move(direction))audioWorld.Play("move");}}
             if(Input.GetKeyDown(KeyCode.UpArrow)||Input.GetKeyDown(KeyCode.X)||Input.GetKeyDown(KeyCode.W)){if(game.Rotate(1))audioWorld.Play("rotate");}
             if(Input.GetKeyDown(KeyCode.Z)){if(game.Rotate(-1))audioWorld.Play("rotate");}
             if(Input.GetKeyDown(KeyCode.C)||Input.GetKeyDown(KeyCode.LeftShift)||Input.GetKeyDown(KeyCode.RightShift)){if(game.Hold())audioWorld.Play("hold");}
             if(Input.GetKeyDown(KeyCode.Space)){game.HardDrop();audioWorld.Play("drop");shake=.12f;return;}
-            if(Input.GetKey(KeyCode.DownArrow)||Input.GetKey(KeyCode.S)||touchDown)
+            if(Input.GetKey(KeyCode.DownArrow)||Input.GetKey(KeyCode.S))
             {softTimer-=Time.deltaTime;if(softTimer<=0){softTimer=.035f;game.SoftDrop();}}
             else softTimer=0;
         }
@@ -313,6 +317,7 @@ namespace iTetris
         }
         void OnLock(LockResult result)
         {
+            if(gestureSurface!=null)gestureSurface.Cancel();
             foreach(var c in result.Cells)Burst(BoardPosition(c.X,c.Y),CrystalView.Palette[(int)result.Kind],3);
             if(result.ClearedRows.Length>0)
             {
@@ -364,7 +369,7 @@ namespace iTetris
         {
             float dt=Time.deltaTime;
             for(int i=0;i<stars.Count;i++){var t=stars[i];t.position+=new Vector3(Mathf.Sin(Time.time*.15f+i)*.015f,.065f,0)*dt;if(t.position.y>12.5f)t.position+=Vector3.down*25;}
-            if(shake>0){shake-=dt;cameraMain.transform.position=new Vector3(0,Mathf.Sin(Time.time*70)*shake*.22f,-30);}else cameraMain.transform.position=new Vector3(0,0,-30);
+            if(shake>0){shake-=dt;cameraMain.transform.position=new Vector3(0,(mobileMode?-.3f:0)+Mathf.Sin(Time.time*70)*shake*.22f,-30);}else cameraMain.transform.position=new Vector3(0,mobileMode?-.3f:0,-30);
         }
         void Finish()
         {
@@ -381,6 +386,7 @@ namespace iTetris
             #if UNITY_STANDALONE_OSX
             Check(Screen.fullScreenMode==FullScreenMode.FullScreenWindow,"macOS starts fullscreen");
             #endif
+            if(mobileMode)OpenHub();
             Check(hubVisible&&hubRoot.activeSelf&&!tetrisWorld.activeSelf&&!tetrisUiRoot.activeSelf,"hub is the native startup screen");
             SelectHubGame(1);Check(hubPlayButtons[1].interactable,"Brick Garden is playable in hub");
             PrimaryHubAction();Check(gardenActive&&!hubVisible&&!tetrisWorld.activeSelf,"garden opens independently of Tetris");
@@ -406,7 +412,7 @@ namespace iTetris
             PrimaryHubAction();Check(!hubVisible&&!paused&&!overlay.gameObject.activeSelf,"card resume returns directly to Tetris");
             StartGame();zen=true;
             Check(started&&!overlay.gameObject.activeSelf,"start menu closes");
-            Check(game.Hold(),"hold input action");DrawGame();Check(mobileMode?mobilePreviewCells[12].gameObject.activeSelf:previews[12].activeSelf,"held piece is rendered");
+            Check(game.Hold(),"hold input action");DrawGame();Check(mobileMode?mobilePreviewPieces[3].gameObject.activeSelf:previews[12].activeSelf,"held piece is rendered");
             Check(game.Move(-1)&&game.Rotate(1),"move and rotate actions");game.HardDrop();DrawGame();
             Check(game.Score>0,"drop updates score");
             game.Restart();Array.Clear(game.Board,0,game.Board.Length);

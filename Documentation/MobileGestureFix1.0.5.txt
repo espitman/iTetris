@@ -1,0 +1,18 @@
+iTetris Mobile 1.0.5 — vertical gesture lateral drift fix
+Date: 2026-10-07
+Android package: com.itetris.mobile, versionCode 6 (verified by aapt2).
+Cause: both axes were quantized and applied during a vertical stroke. Lateral drift
+could reach a cell threshold before hard drop, including on the release sample.
+Fix: when the recent stroke is vertical, discard and rebase the horizontal remainder.
+An intentional horizontal direction change enables horizontal movement again.
+
+Validation: 17 regression tests passed against the actual TetrisGestureSurface in
+Unity 6000.0.83f1 Editor using PointerEventData and a deterministic clock.
+Results: GestureRegressionTests.txt. Includes left/right drift, accumulated drift,
+release-only sample, prior horizontal remainder, intentional direction changes,
+slow drop, hold, tap, cancellation, duplicate release and pause before release.
+Core rules tests also passed (13 Tetris, 14 garden, 18 breaker checks).
+Android IL2CPP ARM64 build succeeded; no Android device run performed for this patch.
+Previous visual/device verification remains recorded separately for version 1.0.4.
+APK: Builds/Android/iTetrisMobile-1.0.5.apk
+SHA256: d3ab6204472dd76f2004cce874c72b95dc9899017aa0eba0065cf4dbcc9a6f1c

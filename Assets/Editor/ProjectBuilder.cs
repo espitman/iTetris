@@ -38,7 +38,7 @@ namespace iTetris.Editor
             foreach(string guid in AssetDatabase.FindAssets("t:Texture2D",new[]{"Assets/Resources/Art"}))
             {
                 var importer=(TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GUIDToAssetPath(guid));
-                if(importer.assetPath.Contains("/Breaker")&&(importer.npotScale!=TextureImporterNPOTScale.None||!importer.alphaIsTransparency))
+                if((importer.assetPath.Contains("/Breaker")||importer.assetPath.Contains("/MobileUI/"))&&(importer.npotScale!=TextureImporterNPOTScale.None||!importer.alphaIsTransparency))
                 {importer.npotScale=TextureImporterNPOTScale.None;importer.alphaIsTransparency=true;importer.SaveAndReimport();}
                 if(importer.maxTextureSize!=2048||importer.textureCompression!=TextureImporterCompression.Uncompressed||importer.mipmapEnabled)
                 {importer.maxTextureSize=2048;importer.textureCompression=TextureImporterCompression.Uncompressed;importer.mipmapEnabled=false;importer.SaveAndReimport();}
@@ -109,7 +109,7 @@ namespace iTetris.Editor
                 if(new FileInfo(file).Length>25L*1024*1024)throw new Exception("Cloudflare Pages asset exceeds 25 MiB: "+file);
             Debug.Log("ITETRIS_WEB_BUILD_SUCCEEDED "+report.summary.totalSize);
         }
-        [MenuItem("iTetris/Build Android APK")]
+        [MenuItem("iTetris/Build standalone mobile Tetris APK")]
         public static void BuildAndroid()
         {
             var tools=Path.Combine(EditorApplication.applicationContentsPath,"PlaybackEngines/AndroidPlayer");
@@ -120,32 +120,46 @@ namespace iTetris.Editor
             string ndk=Path.Combine(tools,"SDK/ndk/27.2.12479018");
             UnityEditor.Android.AndroidExternalToolsSettings.ndkRootPath=Directory.Exists(ndk)?ndk:Path.Combine(tools,"NDK");
             Prepare();
-            PlayerSettings.productName="Crystal Arcade";
-            PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android,"com.itetris.crystalarcade");
+            PlayerSettings.productName="iTetris Mobile";
+            PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android,"com.itetris.mobile");
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android,ScriptingImplementation.IL2CPP);
             PlayerSettings.SetManagedStrippingLevel(NamedBuildTarget.Android,ManagedStrippingLevel.High);
             PlayerSettings.Android.targetArchitectures=AndroidArchitecture.ARM64;
             PlayerSettings.Android.minSdkVersion=AndroidSdkVersions.AndroidApiLevel26;
             PlayerSettings.Android.targetSdkVersion=AndroidSdkVersions.AndroidApiLevelAuto;
-            PlayerSettings.Android.bundleVersionCode=1;PlayerSettings.Android.useCustomKeystore=false;
-            PlayerSettings.defaultInterfaceOrientation=UIOrientation.LandscapeLeft;
-            PlayerSettings.allowedAutorotateToPortrait=false;PlayerSettings.allowedAutorotateToPortraitUpsideDown=false;
-            PlayerSettings.allowedAutorotateToLandscapeLeft=true;PlayerSettings.allowedAutorotateToLandscapeRight=true;
-            PlayerSettings.defaultInterfaceOrientation=UIOrientation.AutoRotation;
+            PlayerSettings.bundleVersion="1.0.6";
+            PlayerSettings.Android.bundleVersionCode=7;PlayerSettings.Android.useCustomKeystore=false;
+            PlayerSettings.defaultInterfaceOrientation=UIOrientation.Portrait;
+            PlayerSettings.allowedAutorotateToPortrait=true;PlayerSettings.allowedAutorotateToPortraitUpsideDown=false;
+            PlayerSettings.allowedAutorotateToLandscapeLeft=false;PlayerSettings.allowedAutorotateToLandscapeRight=false;
+            PlayerSettings.Android.startInFullscreen=true;
+            PlayerSettings.SplashScreen.show=false;PlayerSettings.SplashScreen.showUnityLogo=false;
+            var icon=Resources.Load<Texture2D>("Art/MobileUI/app-icon");
+            PlayerSettings.SetIconsForTargetGroup(BuildTargetGroup.Unknown,new[]{icon});
+            var sizes=PlayerSettings.GetIconSizesForTargetGroup(BuildTargetGroup.Android);var icons=new Texture2D[sizes.Length];for(int i=0;i<icons.Length;i++)icons[i]=icon;PlayerSettings.SetIconsForTargetGroup(BuildTargetGroup.Android,icons);
             PlayerSettings.SetGraphicsAPIs(BuildTarget.Android,new[]{GraphicsDeviceType.OpenGLES3});
             EditorUserBuildSettings.buildAppBundle=false;EditorUserBuildSettings.androidBuildSystem=AndroidBuildSystem.Gradle;
             foreach(string guid in AssetDatabase.FindAssets("t:Texture2D",new[]{"Assets/Resources/Art"}))
             {
                 var importer=(TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GUIDToAssetPath(guid));
                 var android=importer.GetPlatformTextureSettings("Android");
+                // The concept atlas contains one-pixel lettering and borders.
+                // Retain the original dimensions and avoid compression artifacts
+                // around the small glyphs, fine rims and high-contrast facets.
+                if(importer.assetPath.EndsWith("/approved-reference.png",StringComparison.Ordinal))
+                {
+                    android.overridden=true;android.maxTextureSize=2048;
+                    android.format=TextureImporterFormat.RGBA32;android.textureCompression=TextureImporterCompression.Uncompressed;
+                    importer.SetPlatformTextureSettings(android);importer.SaveAndReimport();continue;
+                }
                 if(android.overridden&&android.maxTextureSize==2048&&android.format==TextureImporterFormat.ETC2_RGBA8&&android.textureCompression==TextureImporterCompression.CompressedHQ&&android.compressionQuality==100)continue;
                 android.overridden=true;android.maxTextureSize=2048;
                 android.format=TextureImporterFormat.ETC2_RGBA8;android.textureCompression=TextureImporterCompression.CompressedHQ;android.compressionQuality=100;
                 importer.SetPlatformTextureSettings(android);importer.SaveAndReimport();
             }
-            var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=new[]{"Assets/Scenes/iTetris.unity"},locationPathName="Builds/Android/CrystalArcade.apk",target=BuildTarget.Android,options=BuildOptions.None});
+            var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=new[]{"Assets/Scenes/iTetris.unity"},locationPathName="Builds/Android/iTetrisMobile.apk",target=BuildTarget.Android,options=BuildOptions.None});
             if(report.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new Exception("Android build failed: "+report.summary.result);
-            Debug.Log("CRYSTAL_ARCADE_ANDROID_BUILD_SUCCEEDED "+report.summary.totalSize);
+            Debug.Log("ITETRIS_MOBILE_ANDROID_BUILD_SUCCEEDED "+report.summary.totalSize);
         }
         public static void RunRulesTests()
         {

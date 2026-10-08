@@ -1,0 +1,30 @@
+iTetris Mobile — Android verification
+Date: 2026-10-07
+Package: com.itetris.mobile
+Version: 1.0.4, Android versionCode: 5
+APK: Builds/Android/iTetrisMobile-1.0.4.apk
+Unity: 6000.0.83f1, IL2CPP, ARM64
+Device: dedicated temporary Android 16 / API 36 emulator
+Resolutions: 1080x2400 and 1080x1920
+
+Build: ITETRIS_MOBILE_ANDROID_BUILD_SUCCEEDED
+Runtime: 73 assertions passed at each resolution.
+Logs: AndroidSmokeTest.log and VisualVerification/1080x1920/AndroidSmokeTest.log
+
+Visual verification: passed at both resolutions against approved-reference.png.
+Mean absolute RGB error at 1080x2400 (channel scale 0–255):
+Pause 0.486; Home 0.523; Launch 0.478; Game Over 0.503.
+Dynamic reference score error 1.062; best error 0.820.
+Pause and Game Over compare the entire screen. Home and Launch compare the original
+artwork footprint (87.08% and 85% of the screen); added scenery outside the reference
+was reviewed visually. Supplemental digits absent from the original artwork were
+generated and reviewed separately; their small bevel differences remain.
+Independent visual review: no important or distracting visual defect in final captures.
+Native pause tap confirmed on the final APK.
+Original gameplay crystal mesh/material preserved. Three NEXT previews remain above
+and outside the board. Menus occupy separate pages. Slow downward drag remains soft
+drop; fast downward flick hard drops on release, with duplicate-release protection.
+
+SHA256: 1d258f33fbe95bff9cdc6fbc9f88b3db5cae54e34e7750d35757b1c11bb1277e
+
+Runtime assertions from final 1080x2400 run:
